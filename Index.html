@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Índice de Artistas – Tienda Outsider</title>
+<style>
+  :root {
+    --bg: #0d0d0d;
+    --surface: #1a1a1a;
+    --surface2: #222222;
+    --border: #333333;
+    --text: #e0e0e0;
+    --text-muted: #888888;
+    --accent: #c8a96e;
+    --accent-hover: #e0c080;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    min-height: 100vh;
+  }
+
+  header {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 24px 20px 20px;
+    text-align: center;
+  }
+
+  header h1 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+
+  header p {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin-top: 6px;
+    letter-spacing: 0.05em;
+  }
+
+  .controls {
+    background: var(--surface2);
+    border-bottom: 1px solid var(--border);
+    padding: 16px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .search-wrap {
+    position: relative;
+  }
+
+  #buscador {
+    width: 100%;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 10px 16px 10px 40px;
+    border-radius: 4px;
+    font-size: 0.95rem;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  #buscador:focus { border-color: var(--accent); }
+
+  .search-icon {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-muted);
+    font-size: 0.9rem;
+  }
+
+  .filtros-genero {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .btn-genero {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 0.72rem;
+    letter-spacing: 0.04em;
+    cursor: pointer;
+    transition: all 0.15s;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  .btn-genero:hover { color: var(--text); border-color: #666; }
+  .btn-genero.activo { color: var(--bg); font-weight: 600; border-color: transparent; }
+
+  .nav-letras {
+    padding: 12px 20px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    border-bottom: 1px solid var(--border);
+    background: var(--bg);
+  }
+
+  .nav-letras a {
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: 0.8rem;
+    padding: 3px 7px;
+    border-radius: 3px;
+    transition: all 0.15s;
+    letter-spacing: 0.05em;
+  }
+
+  .nav-letras a:hover { color: var(--accent); }
+
+  main {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 24px 20px 60px;
+  }
+
+  .letra-bloque {
+    margin-bottom: 32px;
+  }
+
+  .letra-titulo {
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--accent);
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 8px;
+    margin-bottom: 14px;
+    letter-spacing: 0.05em;
+  }
+
+  .artistas-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 8px;
+  }
+
+  .artista-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 10px 14px;
+    text-decoration: none;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    transition: all 0.15s;
+    cursor: pointer;
+  }
+
+  .artista-card:hover {
+    border-color: var(--accent);
+    background: var(--surface2);
+    transform: translateY(-1px);
+  }
+
+  .artista-nombre {
+    color: var(--text);
+    font-size: 0.88rem;
+    font-weight: 500;
+    line-height: 1.3;
+  }
+
+  .artista-badge {
+    font-size: 0.65rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 2px 7px;
+    border-radius: 10px;
+    display: inline-block;
+    font-weight: 600;
+    align-self: flex-start;
+  }
+
+  #sin-resultados {
+    text-align: center;
+    color: var(--text-muted);
+    padding: 60px 20px;
+    font-size: 0.95rem;
+    display: none;
+  }
+
+  .contador {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    text-align: right;
+    padding: 8px 20px 0;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  footer {
+    text-align: center;
+    padding: 30px 20px;
+    color: var(--text-muted);
+    font-size: 0.75rem;
+    border-top: 1px solid var(--border);
+    letter-spacing: 0.05em;
+  }
+
+  footer a { color: var(--accent); text-decoration: none; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Índice de Artistas</h1>
+  <p>Tienda Outsider · 392 artistas disponibles</p>
+</header>
+
+<div class="controls">
+  <div class="search-wrap">
+    <span class="search-icon">&#9906;</span>
+    <input type="text" id="buscador" placeholder="Buscar artista..." autocomplete="off" />
+  </div>
+  <div class="filtros-genero">
+    <button class="btn-genero activo" data-genero="todos" style="background:#c8a96e; color:#0d0d0d;">Todos</button>
+    <button class="btn-genero" data-genero="Black Metal" style="--c:#9b30ff">Black Metal</button><button class="btn-genero" data-genero="Dark - New Wave - Post Punk" style="--c:#4a6aae">Dark - New Wave - Post Punk</button><button class="btn-genero" data-genero="Death Metal" style="--c:#cc2200">Death Metal</button><button class="btn-genero" data-genero="Doom Metal" style="--c:#4a8a4e">Doom Metal</button><button class="btn-genero" data-genero="Folk" style="--c:#6a8a4a">Folk</button><button class="btn-genero" data-genero="Funk" style="--c:#aa6600">Funk</button><button class="btn-genero" data-genero="Glam Rock" style="--c:#cc44aa">Glam Rock</button><button class="btn-genero" data-genero="Hard Rock" style="--c:#cc3333">Hard Rock</button><button class="btn-genero" data-genero="Hardcore - Grindcore - Groove Metal" style="--c:#cc3333">Hardcore - Grindcore - Groove Metal</button><button class="btn-genero" data-genero="Heavy Metal" style="--c:#888888">Heavy Metal</button><button class="btn-genero" data-genero="Metal Progresivo" style="--c:#3a8aae">Metal Progresivo</button><button class="btn-genero" data-genero="Metalcore" style="--c:#8a4dc2">Metalcore</button><button class="btn-genero" data-genero="Nu Metal" style="--c:#c27a00">Nu Metal</button><button class="btn-genero" data-genero="Pop Punk" style="--c:#aa8800">Pop Punk</button><button class="btn-genero" data-genero="Power Metal" style="--c:#3a6abe">Power Metal</button><button class="btn-genero" data-genero="Punk Rock" style="--c:#aa7700">Punk Rock</button><button class="btn-genero" data-genero="Thrash Metal" style="--c:#e05500">Thrash Metal</button>
+  </div>
+</div>
+
+<div class="nav-letras" id="navLetras">
+  <a href="#letra-A">A</a><a href="#letra-B">B</a><a href="#letra-C">C</a><a href="#letra-D">D</a><a href="#letra-E">E</a><a href="#letra-F">F</a><a href="#letra-G">G</a><a href="#letra-H">H</a><a href="#letra-I">I</a><a href="#letra-J">J</a><a href="#letra-K">K</a><a href="#letra-L">L</a><a href="#letra-M">M</a><a href="#letra-N">N</a><a href="#letra-O">O</a><a href="#letra-P">P</a><a href="#letra-Q">Q</a><a href="#letra-R">R</a><a href="#letra-S">S</a><a href="#letra-T">T</a><a href="#letra-U">U</a><a href="#letra-V">V</a><a href="#letra-W">W</a><a href="#letra-X">X</a><a href="#letra-Z">Z</a>
+</div>
+
+<div class="contador" id="contador">392 artistas</div>
+
+<main id="main">
+  <div id="sin-resultados">No se encontraron artistas.</div>
+</main>
+
+<footer>
+  <a href="https://www.tiendaoutsider.com.ar" target="_blank">tiendaoutsider.com.ar</a>
+</footer>
+
+<script>
+const ARTISTAS = [{"nombre": "A Day to Remember", "genero": "Metalcore", "url": "https://www.tiendaoutsider.com.ar/search?q=A%20Day%20to%20Remember"}, {"nombre": "Abbath", "genero": "Black Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Abbath"}, {"nombre": "AC/DC", "genero": "Hard Rock", "url": "https://www.tiendaoutsider.com.ar/search?q=AC/DC"}, {"nombre": "AC/DC Logo efecto 3D", "genero": "Hard Rock", "url": "https://www.tiendaoutsider.com.ar/search?q=AC/DC%20Logo%20efecto%203D"}, {"nombre": "Accept", "genero": "Heavy Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Accept"}, {"nombre": "Ace Frehley", "genero": "Hard Rock", "url": "https://www.tiendaoutsider.com.ar/search?q=Ace%20Frehley"}, {"nombre": "Afflicted", "genero": "Death Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Afflicted"}, {"nombre": "Agalloch", "genero": "Black Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Agalloch"}, {"nombre": "Agalloch", "genero": "Black Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Agalloch"}, {"nombre": "Agalloch", "genero": "Black Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Agalloch"}, {"nombre": "Agalloch", "genero": "Black Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Agalloch"}, {"nombre": "Airbourne", "genero": "Hard Rock", "url": "https://www.tiendaoutsider.com.ar/search?q=Airbourne"}, {"nombre": "Alcest", "genero": "Black Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Alcest"}, {"nombre": "Alcest", "genero": "Black Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Alcest"}, {"nombre": "Alice Cooper", "genero": "Hard Rock", "url": "https://www.tiendaoutsider.com.ar/search?q=Alice%20Cooper"}, {"nombre": "Alice Cooper", "genero": "Hard Rock", "url": "https://www.tiendaoutsider.com.ar/search?q=Alice%20Cooper"}, {"nombre": "Alice Cooper", "genero": "Hard Rock", "url": "https://www.tiendaoutsider.com.ar/search?q=Alice%20Cooper"}, {"nombre": "Alice Cooper", "genero": "Hard Rock", "url": "https://www.tiendaoutsider.com.ar/search?q=Alice%20Cooper"}, {"nombre": "Alice In Chains", "genero": "Hard Rock", "url": "https://www.tiendaoutsider.com.ar/search?q=Alice%20In%20Chains"}, {"nombre": "Alice in Chains", "genero": "Hard Rock", "url": "https://www.tiendaoutsider.com.ar/search?q=Alice%20in%20Chains"}, {"nombre": "Alice In Chains", "genero": "Hard Rock", "url": "https://www.tiendaoutsider.com.ar/search?q=Alice%20In%20Chains"}, {"nombre": "Ambush", "genero": "Power Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Ambush"}, {"nombre": "Amon Amarth", "genero": "Death Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Amon%20Amarth"}, {"nombre": "Amorphis", "genero": "Death Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Amorphis"}, {"nombre": "Angel Witch", "genero": "Heavy Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Angel%20Witch"}, {"nombre": "Animals As Leaders", "genero": "Metal Progresivo", "url": "https://www.tiendaoutsider.com.ar/search?q=Animals%20As%20Leaders"}, {"nombre": "Anthrax", "genero": "Thrash Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Anthrax"}, {"nombre": "Apokalyptic Raids", "genero": "Black Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Apokalyptic%20Raids"}, {"nombre": "Arch Enemy", "genero": "Death Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Arch%20Enemy"}, {"nombre": "Architects", "genero": "Metalcore", "url": "https://www.tiendaoutsider.com.ar/search?q=Architects"}, {"nombre": "Architects", "genero": "Metalcore", "url": "https://www.tiendaoutsider.com.ar/search?q=Architects"}, {"nombre": "Artillery", "genero": "Thrash Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Artillery"}, {"nombre": "Asphyx", "genero": "Death Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Asphyx"}, {"nombre": "At The Gates", "genero": "Death Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=At%20The%20Gates"}, {"nombre": "At The gates", "genero": "Death Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=At%20The%20gates"}, {"nombre": "Atrophy", "genero": "Thrash Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Atrophy"}, {"nombre": "BabyMetal", "genero": "Nu Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=BabyMetal"}, {"nombre": "Bad Omens", "genero": "Metalcore", "url": "https://www.tiendaoutsider.com.ar/search?q=Bad%20Omens"}, {"nombre": "Bad Omens x Death note", "genero": "Metalcore", "url": "https://www.tiendaoutsider.com.ar/search?q=Bad%20Omens%20x%20Death%20note"}, {"nombre": "Bad Omens", "genero": "Metalcore", "url": "https://www.tiendaoutsider.com.ar/search?q=Bad%20Omens"}, {"nombre": "Baest", "genero": "Death Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Baest"}, {"nombre": "Baron Rojo", "genero": "Heavy Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Baron%20Rojo"}, {"nombre": "Baron Rojo", "genero": "Heavy Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Baron%20Rojo"}, {"nombre": "Barón Rojo", "genero": "Heavy Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Bar%C3%B3n%20Rojo"}, {"nombre": "Barón Rojo", "genero": "Heavy Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Bar%C3%B3n%20Rojo"}, {"nombre": "Barón Rojo", "genero": "Heavy Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Bar%C3%B3n%20Rojo"}, {"nombre": "Bathory", "genero": "Black Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Bathory"}, {"nombre": "Batushka", "genero": "Black Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Batushka"}, {"nombre": "Behemoth", "genero": "Black Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Behemoth"}, {"nombre": "Belzebong", "genero": "Doom Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Belzebong"}, {"nombre": "Benediction", "genero": "Death Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Benediction"}, {"nombre": "The Black Dahlia Murder", "genero": "Death Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=The%20Black%20Dahlia%20Murder"}, {"nombre": "Black Label Society", "genero": "Hard Rock", "url": "https://www.tiendaoutsider.com.ar/search?q=Black%20Label%20Society"}, {"nombre": "Black Sabbath", "genero": "Heavy Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Black%20Sabbath"}, {"nombre": "Black Sabbath", "genero": "Heavy Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Black%20Sabbath"}, {"nombre": "Black Sabbath", "genero": "Heavy Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Black%20Sabbath"}, {"nombre": "Black Sabbath", "genero": "Heavy Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Black%20Sabbath"}, {"nombre": "Black Sabbath", "genero": "Heavy Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Black%20Sabbath"}, {"nombre": "Blind Guardian", "genero": "Power Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Blind%20Guardian"}, {"nombre": "Body Count", "genero": "Nu Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Body%20Count"}, {"nombre": "Bolt Thrower", "genero": "Death Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Bolt%20Thrower"}, {"nombre": "Bon Scott", "genero": "Hard Rock", "url": "https://www.tiendaoutsider.com.ar/search?q=Bon%20Scott"}, {"nombre": "Bring Me The Horizon", "genero": "Metalcore", "url": "https://www.tiendaoutsider.com.ar/search?q=Bring%20Me%20The%20Horizon"}, {"nombre": "Bruce Dickinson", "genero": "Heavy Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Bruce%20Dickinson"}, {"nombre": "Burzum", "genero": "Black Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Burzum"}, {"nombre": "Cadaver", "genero": "Death Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Cadaver"}, {"nombre": "Cancer", "genero": "Death Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Cancer"}, {"nombre": "Candlemass", "genero": "Doom Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Candlemass"}, {"nombre": "Candlemass", "genero": "Doom Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Candlemass"}, {"nombre": "Candlemass", "genero": "Doom Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Candlemass"}, {"nombre": "Candlemass", "genero": "Doom Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Candlemass"}, {"nombre": "Cannibal Corpse", "genero": "Death Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Cannibal%20Corpse"}, {"nombre": "Cannibal Corpse Logo", "genero": "Death Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Cannibal%20Corpse%20Logo"}, {"nombre": "Cannibal Corpse", "genero": "Death Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Cannibal%20Corpse"}, {"nombre": "Carcass", "genero": "Death Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Carcass"}, {"nombre": "Cathedral", "genero": "Doom Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Cathedral"}, {"nombre": "Celtic Frost", "genero": "Black Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Celtic%20Frost"}, {"nombre": "Cephalic Carnage", "genero": "Hardcore - Grindcore - Groove Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Cephalic%20Carnage"}, {"nombre": "Chelsea Grin", "genero": "Metalcore", "url": "https://www.tiendaoutsider.com.ar/search?q=Chelsea%20Grin"}, {"nombre": "Children Of Bodom", "genero": "Death Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Children%20Of%20Bodom"}, {"nombre": "Children of Bodom", "genero": "Death Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Children%20of%20Bodom"}, {"nombre": "Cinderella", "genero": "Hard Rock", "url": "https://www.tiendaoutsider.com.ar/search?q=Cinderella"}, {"nombre": "Clutch", "genero": "Doom Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Clutch"}, {"nombre": "Conan", "genero": "Doom Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Conan"}, {"nombre": "Coroner", "genero": "Thrash Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Coroner"}, {"nombre": "Corrosion Of Conformity", "genero": "Doom Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Corrosion%20Of%20Conformity"}, {"nombre": "Corrosion of Conformity", "genero": "Doom Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Corrosion%20of%20Conformity"}, {"nombre": "Cradle of Filth", "genero": "Black Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Cradle%20of%20Filth"}, {"nombre": "Crimson Glory", "genero": "Power Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Crimson%20Glory"}, {"nombre": "Crimson Glory", "genero": "Power Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Crimson%20Glory"}, {"nombre": "Crowbar", "genero": "Doom Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Crowbar"}, {"nombre": "Cryptopsy", "genero": "Death Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Cryptopsy"}, {"nombre": "The Cult", "genero": "Hard Rock", "url": "https://www.tiendaoutsider.com.ar/search?q=The%20Cult"}, {"nombre": "D", "genero": "Hardcore - Grindcore - Groove Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=D"}, {"nombre": "Danzig", "genero": "Heavy Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Danzig"}, {"nombre": "Dark Funeral", "genero": "Black Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Dark%20Funeral"}, {"nombre": "Dark Tranquillity", "genero": "Death Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Dark%20Tranquillity"}, {"nombre": "Darkthrone", "genero": "Black Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Darkthrone"}, {"nombre": "Darkthrone Logo", "genero": "Black Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Darkthrone%20Logo"}, {"nombre": "Death", "genero": "Death Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Death"}, {"nombre": "Death Angel", "genero": "Thrash Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Death%20Angel"}, {"nombre": "Death breath", "genero": "Death Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Death%20breath"}, {"nombre": "Decapitated", "genero": "Death Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Decapitated"}, {"nombre": "Deep Purple", "genero": "Hard Rock", "url": "https://www.tiendaoutsider.com.ar/search?q=Deep%20Purple"}, {"nombre": "Deep Purple", "genero": "Hard Rock", "url": "https://www.tiendaoutsider.com.ar/search?q=Deep%20Purple"}, {"nombre": "Deep Purple", "genero": "Hard Rock", "url": "https://www.tiendaoutsider.com.ar/search?q=Deep%20Purple"}, {"nombre": "Def Leppard", "genero": "Hard Rock", "url": "https://www.tiendaoutsider.com.ar/search?q=Def%20Leppard"}, {"nombre": "Deftones", "genero": "Nu Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Deftones"}, {"nombre": "Deftones", "genero": "Nu Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Deftones"}, {"nombre": "Deftones", "genero": "Nu Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Deftones"}, {"nombre": "Deicide", "genero": "Death Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Deicide"}, {"nombre": "Destruction", "genero": "Thrash Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Destruction"}, {"nombre": "Dimmu Borgir", "genero": "Black Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Dimmu%20Borgir"}, {"nombre": "Dio", "genero": "Heavy Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Dio"}, {"nombre": "Dio Logo 3D Gris", "genero": "Heavy Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Dio%20Logo%203D%20Gris"}, {"nombre": "Dio Logo 3D Rojo", "genero": "Heavy Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Dio%20Logo%203D%20Rojo"}, {"nombre": "Dio", "genero": "Heavy Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Dio"}, {"nombre": "Discharge", "genero": "Thrash Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Discharge"}, {"nombre": "Discharge", "genero": "Thrash Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Discharge"}, {"nombre": "Dismember", "genero": "Death Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Dismember"}, {"nombre": "Dissection", "genero": "Black Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Dissection"}, {"nombre": "Dokken", "genero": "Hard Rock", "url": "https://www.tiendaoutsider.com.ar/search?q=Dokken"}, {"nombre": "Don Dokken", "genero": "Hard Rock", "url": "https://www.tiendaoutsider.com.ar/search?q=Don%20Dokken"}, {"nombre": "Down", "genero": "Doom Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Down"}, {"nombre": "Dying Fetus", "genero": "Death Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Dying%20Fetus"}, {"nombre": "Electric Wizard", "genero": "Doom Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Electric%20Wizard"}, {"nombre": "Emperor", "genero": "Black Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Emperor"}, {"nombre": "Entombed", "genero": "Death Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Entombed"}, {"nombre": "Epica", "genero": "Power Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Epica"}, {"nombre": "Europe", "genero": "Hard Rock", "url": "https://www.tiendaoutsider.com.ar/search?q=Europe"}, {"nombre": "Exhorder", "genero": "Thrash Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Exhorder"}, {"nombre": "Exodus", "genero": "Thrash Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Exodus"}, {"nombre": "Extremoduro", "genero": "Hard Rock", "url": "https://www.tiendaoutsider.com.ar/search?q=Extremoduro"}, {"nombre": "Exumer", "genero": "Thrash Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Exumer"}, {"nombre": "Eyehategod", "genero": "Doom Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Eyehategod"}, {"nombre": "Faith No More", "genero": "Hard Rock", "url": "https://www.tiendaoutsider.com.ar/search?q=Faith%20No%20More"}, {"nombre": "Faith No More Logo", "genero": "Hard Rock", "url": "https://www.tiendaoutsider.com.ar/search?q=Faith%20No%20More%20Logo"}, {"nombre": "Fear Factory", "genero": "Nu Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Fear%20Factory"}, {"nombre": "Fight", "genero": "Heavy Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Fight"}, {"nombre": "Flotsam And Jetsam", "genero": "Thrash Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Flotsam%20And%20Jetsam"}, {"nombre": "Flotsam and Jetsam", "genero": "Thrash Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Flotsam%20and%20Jetsam"}, {"nombre": "Forbidden", "genero": "Thrash Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Forbidden"}, {"nombre": "Fu Manchu", "genero": "Doom Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Fu%20Manchu"}, {"nombre": "Fu Manchu", "genero": "Doom Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Fu%20Manchu"}, {"nombre": "Fu Manchu", "genero": "Doom Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Fu%20Manchu"}, {"nombre": "Fu Manchu", "genero": "Doom Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Fu%20Manchu"}, {"nombre": "Fuckin' Slayer", "genero": "Thrash Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Fuckin%27%20Slayer"}, {"nombre": "Gamma Ray", "genero": "Power Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Gamma%20Ray"}, {"nombre": "Gang Green", "genero": "Hardcore - Grindcore - Groove Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Gang%20Green"}, {"nombre": "Ghost", "genero": "Doom Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Ghost"}, {"nombre": "Goatwhore", "genero": "Black Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Goatwhore"}, {"nombre": "God Macabre", "genero": "Death Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=God%20Macabre"}, {"nombre": "Godflesh", "genero": "Doom Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Godflesh"}, {"nombre": "Godsmack", "genero": "Hard Rock", "url": "https://www.tiendaoutsider.com.ar/search?q=Godsmack"}, {"nombre": "Gojira", "genero": "Metal Progresivo", "url": "https://www.tiendaoutsider.com.ar/search?q=Gojira"}, {"nombre": "Gorgoroth", "genero": "Black Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Gorgoroth"}, {"nombre": "Gorguts", "genero": "Death Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Gorguts"}, {"nombre": "Guns N' Roses", "genero": "Hard Rock", "url": "https://www.tiendaoutsider.com.ar/search?q=Guns%20N%27%20Roses"}, {"nombre": "Hammerfall", "genero": "Power Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Hammerfall"}, {"nombre": "Havok", "genero": "Thrash Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Havok"}, {"nombre": "Hawkwind", "genero": "Doom Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Hawkwind"}, {"nombre": "Heathen", "genero": "Thrash Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Heathen"}, {"nombre": "The Hellacopters", "genero": "Hard Rock", "url": "https://www.tiendaoutsider.com.ar/search?q=The%20Hellacopters"}, {"nombre": "The Hellacopters Logo", "genero": "Hard Rock", "url": "https://www.tiendaoutsider.com.ar/search?q=The%20Hellacopters%20Logo"}, {"nombre": "Hellhammer", "genero": "Black Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Hellhammer"}, {"nombre": "Helloween", "genero": "Power Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Helloween"}, {"nombre": "Hypocrisy", "genero": "Death Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Hypocrisy"}, {"nombre": "Immolation", "genero": "Death Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Immolation"}, {"nombre": "Immortal", "genero": "Black Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Immortal"}, {"nombre": "In Flames", "genero": "Death Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=In%20Flames"}, {"nombre": "Incantation", "genero": "Death Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Incantation"}, {"nombre": "Iron Maiden", "genero": "Heavy Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Iron%20Maiden"}, {"nombre": "James Hetfield", "genero": "Thrash Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=James%20Hetfield"}, {"nombre": "James Hetfield", "genero": "Thrash Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=James%20Hetfield"}, {"nombre": "Jane's Addiction", "genero": "Hard Rock", "url": "https://www.tiendaoutsider.com.ar/search?q=Jane%27s%20Addiction"}, {"nombre": "Jeff Hanneman en Remera Blanca", "genero": "Thrash Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Jeff%20Hanneman%20en%20Remera%20Blanca"}, {"nombre": "Jeff Hanneman en Remera Negra", "genero": "Thrash Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Jeff%20Hanneman%20en%20Remera%20Negra"}, {"nombre": "Jerry Cantrell", "genero": "Hard Rock", "url": "https://www.tiendaoutsider.com.ar/search?q=Jerry%20Cantrell"}, {"nombre": "John Henry Bonham", "genero": "Hard Rock", "url": "https://www.tiendaoutsider.com.ar/search?q=John%20Henry%20Bonham"}, {"nombre": "Journey", "genero": "Hard Rock", "url": "https://www.tiendaoutsider.com.ar/search?q=Journey"}, {"nombre": "Judas Priest", "genero": "Heavy Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Judas%20Priest"}, {"nombre": "Kataklysm", "genero": "Death Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Kataklysm"}, {"nombre": "Katatonia", "genero": "Death Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Katatonia"}, {"nombre": "Kill Your Idols", "genero": "Hardcore - Grindcore - Groove Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Kill%20Your%20Idols"}, {"nombre": "Killing Joke", "genero": "Dark - New Wave - Post Punk", "url": "https://www.tiendaoutsider.com.ar/search?q=Killing%20Joke"}, {"nombre": "Killswitch Engage", "genero": "Metalcore", "url": "https://www.tiendaoutsider.com.ar/search?q=Killswitch%20Engage"}, {"nombre": "King Diamond", "genero": "Heavy Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=King%20Diamond"}, {"nombre": "Kiss", "genero": "Glam Rock", "url": "https://www.tiendaoutsider.com.ar/search?q=Kiss"}, {"nombre": "Kiss", "genero": "Glam Rock", "url": "https://www.tiendaoutsider.com.ar/search?q=Kiss"}, {"nombre": "Korn", "genero": "Nu Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Korn"}, {"nombre": "Kreator", "genero": "Thrash Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Kreator"}, {"nombre": "Kyuss", "genero": "Doom Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Kyuss"}, {"nombre": "L", "genero": "Hard Rock", "url": "https://www.tiendaoutsider.com.ar/search?q=L"}, {"nombre": "L", "genero": "Hard Rock", "url": "https://www.tiendaoutsider.com.ar/search?q=L"}, {"nombre": "Laaz Rockit", "genero": "Thrash Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Laaz%20Rockit"}, {"nombre": "Lamb of God", "genero": "Metalcore", "url": "https://www.tiendaoutsider.com.ar/search?q=Lamb%20of%20God"}, {"nombre": "Layne Staley", "genero": "Hard Rock", "url": "https://www.tiendaoutsider.com.ar/search?q=Layne%20Staley"}, {"nombre": "Led Zeppelin", "genero": "Hard Rock", "url": "https://www.tiendaoutsider.com.ar/search?q=Led%20Zeppelin"}, {"nombre": "Led Zeppelin", "genero": "Hard Rock", "url": "https://www.tiendaoutsider.com.ar/search?q=Led%20Zeppelin"}, {"nombre": "Lemmy Kilmister", "genero": "Heavy Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Lemmy%20Kilmister"}, {"nombre": "Limp Bizkit", "genero": "Nu Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Limp%20Bizkit"}, {"nombre": "Machine Head", "genero": "Hardcore - Grindcore - Groove Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Machine%20Head"}, {"nombre": "Machine Head", "genero": "Hardcore - Grindcore - Groove Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Machine%20Head"}, {"nombre": "Madball", "genero": "Hardcore - Grindcore - Groove Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Madball"}, {"nombre": "Malevolent Creation", "genero": "Death Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Malevolent%20Creation"}, {"nombre": "Manowar", "genero": "Heavy Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Manowar"}, {"nombre": "Manowar", "genero": "Heavy Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Manowar"}, {"nombre": "Marduk", "genero": "Black Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Marduk"}, {"nombre": "Marilyn Manson", "genero": "Hard Rock", "url": "https://www.tiendaoutsider.com.ar/search?q=Marilyn%20Manson"}, {"nombre": "Massacre", "genero": "Death Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Massacre"}, {"nombre": "Mastodon", "genero": "Metal Progresivo", "url": "https://www.tiendaoutsider.com.ar/search?q=Mastodon"}, {"nombre": "Mayhem", "genero": "Black Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Mayhem"}, {"nombre": "Megadeth", "genero": "Thrash Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Megadeth"}, {"nombre": "Megadeth", "genero": "Thrash Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Megadeth"}, {"nombre": "Melvins", "genero": "Doom Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Melvins"}, {"nombre": "Mercyful Fate", "genero": "Heavy Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Mercyful%20Fate"}, {"nombre": "Meshuggah", "genero": "Metal Progresivo", "url": "https://www.tiendaoutsider.com.ar/search?q=Meshuggah"}, {"nombre": "Metallica", "genero": "Thrash Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Metallica"}, {"nombre": "Metallica", "genero": "Thrash Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Metallica"}, {"nombre": "Metallica Some", "genero": "Thrash Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Metallica%20Some"}, {"nombre": "Metallica", "genero": "Thrash Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Metallica"}, {"nombre": "Metallica", "genero": "Thrash Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Metallica"}, {"nombre": "MGLA", "genero": "Black Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=MGLA"}, {"nombre": "Midinight", "genero": "Black Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Midinight"}, {"nombre": "Misfits", "genero": "Heavy Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Misfits"}, {"nombre": "Monuments", "genero": "Metal Progresivo", "url": "https://www.tiendaoutsider.com.ar/search?q=Monuments"}, {"nombre": "Moonspell", "genero": "Black Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Moonspell"}, {"nombre": "Morbid Angel", "genero": "Death Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Morbid%20Angel"}, {"nombre": "Morbid Angel", "genero": "Death Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Morbid%20Angel"}, {"nombre": "Morgoth", "genero": "Death Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Morgoth"}, {"nombre": "Mortal Sin", "genero": "Thrash Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Mortal%20Sin"}, {"nombre": "Motionless In White", "genero": "Metalcore", "url": "https://www.tiendaoutsider.com.ar/search?q=Motionless%20In%20White"}, {"nombre": "Motley Crue", "genero": "Hard Rock", "url": "https://www.tiendaoutsider.com.ar/search?q=Motley%20Crue"}, {"nombre": "Motorhead", "genero": "Heavy Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Motorhead"}, {"nombre": "Motorhead", "genero": "Heavy Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Motorhead"}, {"nombre": "Mr Bungle", "genero": "Hard Rock", "url": "https://www.tiendaoutsider.com.ar/search?q=Mr%20Bungle"}, {"nombre": "Mr", "genero": "Hard Rock", "url": "https://www.tiendaoutsider.com.ar/search?q=Mr"}, {"nombre": "My Dying Bride", "genero": "Doom Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=My%20Dying%20Bride"}, {"nombre": "Nails", "genero": "Death Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Nails"}, {"nombre": "Nails", "genero": "Death Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Nails"}, {"nombre": "Napalm Death", "genero": "Hardcore - Grindcore - Groove Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Napalm%20Death"}, {"nombre": "Necrophagia", "genero": "Death Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Necrophagia"}, {"nombre": "Necrot", "genero": "Death Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Necrot"}, {"nombre": "Neurosis", "genero": "Doom Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Neurosis"}, {"nombre": "Nevermore", "genero": "Metal Progresivo", "url": "https://www.tiendaoutsider.com.ar/search?q=Nevermore"}, {"nombre": "New Order", "genero": "Dark - New Wave - Post Punk", "url": "https://www.tiendaoutsider.com.ar/search?q=New%20Order"}, {"nombre": "Newsted", "genero": "Thrash Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Newsted"}, {"nombre": "Night Ranger Logo", "genero": "Hard Rock", "url": "https://www.tiendaoutsider.com.ar/search?q=Night%20Ranger%20Logo"}, {"nombre": "Nightwish", "genero": "Power Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Nightwish"}, {"nombre": "Nine Inch Nails", "genero": "Dark - New Wave - Post Punk", "url": "https://www.tiendaoutsider.com.ar/search?q=Nine%20Inch%20Nails"}, {"nombre": "Nuclear Assault", "genero": "Thrash Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Nuclear%20Assault"}, {"nombre": "Obituary", "genero": "Death Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Obituary"}, {"nombre": "The Obsessed", "genero": "Doom Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=The%20Obsessed"}, {"nombre": "Om", "genero": "Doom Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Om"}, {"nombre": "Onslaught", "genero": "Thrash Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Onslaught"}, {"nombre": "Opeth", "genero": "Metal Progresivo", "url": "https://www.tiendaoutsider.com.ar/search?q=Opeth"}, {"nombre": "Overkill", "genero": "Thrash Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Overkill"}, {"nombre": "Ozzy Osbourne", "genero": "Heavy Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Ozzy%20Osbourne"}, {"nombre": "Ozzy Osbourne", "genero": "Heavy Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Ozzy%20Osbourne"}, {"nombre": "Ozzy Osbourne", "genero": "Heavy Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Ozzy%20Osbourne"}, {"nombre": "Ozzy Osbourne", "genero": "Heavy Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Ozzy%20Osbourne"}, {"nombre": "Ozzy Osbourne", "genero": "Heavy Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Ozzy%20Osbourne"}, {"nombre": "Pantera", "genero": "Hardcore - Grindcore - Groove Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Pantera"}, {"nombre": "Paradise Lost", "genero": "Doom Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Paradise%20Lost"}, {"nombre": "Paradox", "genero": "Thrash Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Paradox"}, {"nombre": "Paramore", "genero": "Pop Punk", "url": "https://www.tiendaoutsider.com.ar/search?q=Paramore"}, {"nombre": "Pelican", "genero": "Doom Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Pelican"}, {"nombre": "Pentagram", "genero": "Doom Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Pentagram"}, {"nombre": "Periphery", "genero": "Metal Progresivo", "url": "https://www.tiendaoutsider.com.ar/search?q=Periphery"}, {"nombre": "Pestilence", "genero": "Death Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Pestilence"}, {"nombre": "Philip Anselmo and The Illegals", "genero": "Hardcore - Grindcore - Groove Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Philip%20Anselmo%20and%20The%20Illegals"}, {"nombre": "The Plot In You", "genero": "Metalcore", "url": "https://www.tiendaoutsider.com.ar/search?q=The%20Plot%20In%20You"}, {"nombre": "Polyphia", "genero": "Metal Progresivo", "url": "https://www.tiendaoutsider.com.ar/search?q=Polyphia"}, {"nombre": "Possessed", "genero": "Death Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Possessed"}, {"nombre": "Power Trip", "genero": "Thrash Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Power%20Trip"}, {"nombre": "Primal Fear", "genero": "Power Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Primal%20Fear"}, {"nombre": "Primus", "genero": "Hard Rock", "url": "https://www.tiendaoutsider.com.ar/search?q=Primus"}, {"nombre": "Prong", "genero": "Thrash Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Prong"}, {"nombre": "Pungent Stench", "genero": "Death Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Pungent%20Stench"}, {"nombre": "Queensryche", "genero": "Metal Progresivo", "url": "https://www.tiendaoutsider.com.ar/search?q=Queensryche"}, {"nombre": "Rage", "genero": "Power Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Rage"}, {"nombre": "Rage Against The Machine", "genero": "Nu Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Rage%20Against%20The%20Machine"}, {"nombre": "Rage Against the Machine", "genero": "Nu Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Rage%20Against%20the%20Machine"}, {"nombre": "Rainbow", "genero": "Hard Rock", "url": "https://www.tiendaoutsider.com.ar/search?q=Rainbow"}, {"nombre": "Rammstein", "genero": "Hard Rock", "url": "https://www.tiendaoutsider.com.ar/search?q=Rammstein"}, {"nombre": "Rammstein", "genero": "Hard Rock", "url": "https://www.tiendaoutsider.com.ar/search?q=Rammstein"}, {"nombre": "Rammstein", "genero": "Hard Rock", "url": "https://www.tiendaoutsider.com.ar/search?q=Rammstein"}, {"nombre": "Rammstein", "genero": "Hard Rock", "url": "https://www.tiendaoutsider.com.ar/search?q=Rammstein"}, {"nombre": "The Ramones", "genero": "Punk Rock", "url": "https://www.tiendaoutsider.com.ar/search?q=The%20Ramones"}, {"nombre": "Randy Rhoads", "genero": "Heavy Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Randy%20Rhoads"}, {"nombre": "Ratt", "genero": "Hard Rock", "url": "https://www.tiendaoutsider.com.ar/search?q=Ratt"}, {"nombre": "Razor", "genero": "Thrash Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Razor"}, {"nombre": "Red Fang", "genero": "Doom Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Red%20Fang"}, {"nombre": "Red Fang", "genero": "Doom Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Red%20Fang"}, {"nombre": "Red Hot Chili Peppers", "genero": "Funk", "url": "https://www.tiendaoutsider.com.ar/search?q=Red%20Hot%20Chili%20Peppers"}, {"nombre": "Repulsion", "genero": "Hardcore - Grindcore - Groove Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Repulsion"}, {"nombre": "Rob Zombie", "genero": "Hard Rock", "url": "https://www.tiendaoutsider.com.ar/search?q=Rob%20Zombie"}, {"nombre": "Rollins Band", "genero": "Hard Rock", "url": "https://www.tiendaoutsider.com.ar/search?q=Rollins%20Band"}, {"nombre": "Rotting Christ", "genero": "Black Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Rotting%20Christ"}, {"nombre": "Running Wild", "genero": "Thrash Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Running%20Wild"}, {"nombre": "Rush", "genero": "Hard Rock", "url": "https://www.tiendaoutsider.com.ar/search?q=Rush"}, {"nombre": "Rush", "genero": "Hard Rock", "url": "https://www.tiendaoutsider.com.ar/search?q=Rush"}, {"nombre": "Sabaton", "genero": "Power Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Sabaton"}, {"nombre": "Sabbat", "genero": "Thrash Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Sabbat"}, {"nombre": "Sacramentum", "genero": "Black Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Sacramentum"}, {"nombre": "Sacred Raich", "genero": "Thrash Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Sacred%20Raich"}, {"nombre": "Sacred Reich", "genero": "Thrash Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Sacred%20Reich"}, {"nombre": "Saint Vitus", "genero": "Doom Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Saint%20Vitus"}, {"nombre": "Samael", "genero": "Black Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Samael"}, {"nombre": "Satyricon", "genero": "Black Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Satyricon"}, {"nombre": "Savatage", "genero": "Heavy Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Savatage"}, {"nombre": "Saxon", "genero": "Heavy Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Saxon"}, {"nombre": "Scorpions", "genero": "Heavy Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Scorpions"}, {"nombre": "Sepultura", "genero": "Thrash Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Sepultura"}, {"nombre": "Sinister", "genero": "Death Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Sinister"}, {"nombre": "Six Feet Under", "genero": "Death Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Six%20Feet%20Under"}, {"nombre": "Skeletal Remains", "genero": "Death Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Skeletal%20Remains"}, {"nombre": "Slayer", "genero": "Thrash Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Slayer"}, {"nombre": "Slayer", "genero": "Thrash Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Slayer"}, {"nombre": "Sleep", "genero": "Doom Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Sleep"}, {"nombre": "Sleep Token", "genero": "Nu Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Sleep%20Token"}, {"nombre": "Sleep Vol", "genero": "Doom Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Sleep%20Vol"}, {"nombre": "Sleep", "genero": "Doom Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Sleep"}, {"nombre": "Sleep", "genero": "Doom Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Sleep"}, {"nombre": "Slipknot", "genero": "Nu Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Slipknot"}, {"nombre": "Sodom", "genero": "Thrash Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Sodom"}, {"nombre": "Soilwork", "genero": "Metal Progresivo", "url": "https://www.tiendaoutsider.com.ar/search?q=Soilwork"}, {"nombre": "Solstafir", "genero": "Doom Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Solstafir"}, {"nombre": "Sonata Arctica Takatalvi", "genero": "Power Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Sonata%20Arctica%20Takatalvi"}, {"nombre": "Sonata Arctica", "genero": "Power Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Sonata%20Arctica"}, {"nombre": "Sonata Arctica", "genero": "Power Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Sonata%20Arctica"}, {"nombre": "Soundgarden", "genero": "Hard Rock", "url": "https://www.tiendaoutsider.com.ar/search?q=Soundgarden"}, {"nombre": "Spirit Adrift", "genero": "Doom Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Spirit%20Adrift"}, {"nombre": "Spiritual Beggars", "genero": "Doom Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Spiritual%20Beggars"}, {"nombre": "Stone Temple Pilots", "genero": "Hard Rock", "url": "https://www.tiendaoutsider.com.ar/search?q=Stone%20Temple%20Pilots"}, {"nombre": "Suffocation Poster", "genero": "Death Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Suffocation%20Poster"}, {"nombre": "Suffocation", "genero": "Death Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Suffocation"}, {"nombre": "Suicidal Angels", "genero": "Thrash Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Suicidal%20Angels"}, {"nombre": "Suicidal Tendencies", "genero": "Hardcore - Grindcore - Groove Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Suicidal%20Tendencies"}, {"nombre": "Sunn O)))", "genero": "Doom Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Sunn%20O%29%29%29"}, {"nombre": "Sunn o)))", "genero": "Doom Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Sunn%20o%29%29%29"}, {"nombre": "The Sword", "genero": "Doom Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=The%20Sword"}, {"nombre": "Sylosis", "genero": "Thrash Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Sylosis"}, {"nombre": "System of a Down", "genero": "Nu Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=System%20of%20a%20Down"}, {"nombre": "Sólstafir", "genero": "Doom Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=S%C3%B3lstafir"}, {"nombre": "Terrorizer", "genero": "Hardcore - Grindcore - Groove Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Terrorizer"}, {"nombre": "Tesseract", "genero": "Metal Progresivo", "url": "https://www.tiendaoutsider.com.ar/search?q=Tesseract"}, {"nombre": "Testament", "genero": "Thrash Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Testament"}, {"nombre": "Thin Lizzy", "genero": "Hard Rock", "url": "https://www.tiendaoutsider.com.ar/search?q=Thin%20Lizzy"}, {"nombre": "Thin Lizzy", "genero": "Hard Rock", "url": "https://www.tiendaoutsider.com.ar/search?q=Thin%20Lizzy"}, {"nombre": "Thin Lizzy", "genero": "Hard Rock", "url": "https://www.tiendaoutsider.com.ar/search?q=Thin%20Lizzy"}, {"nombre": "Tommy Bolin", "genero": "Hard Rock", "url": "https://www.tiendaoutsider.com.ar/search?q=Tommy%20Bolin"}, {"nombre": "Tony Iommi", "genero": "Heavy Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Tony%20Iommi"}, {"nombre": "Tool", "genero": "Metal Progresivo", "url": "https://www.tiendaoutsider.com.ar/search?q=Tool"}, {"nombre": "Toska", "genero": "Metal Progresivo", "url": "https://www.tiendaoutsider.com.ar/search?q=Toska"}, {"nombre": "Toxic Holocaust", "genero": "Thrash Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Toxic%20Holocaust"}, {"nombre": "Triptykon", "genero": "Black Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Triptykon"}, {"nombre": "Trouble", "genero": "Doom Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Trouble"}, {"nombre": "Trouble", "genero": "Doom Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Trouble"}, {"nombre": "Turnstile", "genero": "Hardcore - Grindcore - Groove Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Turnstile"}, {"nombre": "Twisted Sister Logo", "genero": "Heavy Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Twisted%20Sister%20Logo"}, {"nombre": "Tygers Of Pan Tang", "genero": "Heavy Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Tygers%20Of%20Pan%20Tang"}, {"nombre": "Type O Negative", "genero": "Doom Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Type%20O%20Negative"}, {"nombre": "Ulver", "genero": "Black Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Ulver"}, {"nombre": "Ulver", "genero": "Black Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Ulver"}, {"nombre": "Unleashed", "genero": "Death Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Unleashed"}, {"nombre": "Vader", "genero": "Death Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Vader"}, {"nombre": "Van Halen", "genero": "Hard Rock", "url": "https://www.tiendaoutsider.com.ar/search?q=Van%20Halen"}, {"nombre": "Velvet Revolver", "genero": "Hard Rock", "url": "https://www.tiendaoutsider.com.ar/search?q=Velvet%20Revolver"}, {"nombre": "Venom", "genero": "Black Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Venom"}, {"nombre": "Venom", "genero": "Black Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Venom"}, {"nombre": "Vio-Lence", "genero": "Thrash Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Vio-Lence"}, {"nombre": "Voivod", "genero": "Metal Progresivo", "url": "https://www.tiendaoutsider.com.ar/search?q=Voivod"}, {"nombre": "W", "genero": "Heavy Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=W"}, {"nombre": "Wardruna", "genero": "Folk", "url": "https://www.tiendaoutsider.com.ar/search?q=Wardruna"}, {"nombre": "Warlord", "genero": "Heavy Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Warlord"}, {"nombre": "Watain", "genero": "Black Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Watain"}, {"nombre": "While She Sleeps", "genero": "Metalcore", "url": "https://www.tiendaoutsider.com.ar/search?q=While%20She%20Sleeps"}, {"nombre": "Whiplash", "genero": "Thrash Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Whiplash"}, {"nombre": "White Zombie", "genero": "Hard Rock", "url": "https://www.tiendaoutsider.com.ar/search?q=White%20Zombie"}, {"nombre": "Whitesnake", "genero": "Hard Rock", "url": "https://www.tiendaoutsider.com.ar/search?q=Whitesnake"}, {"nombre": "Whitesnake", "genero": "Hard Rock", "url": "https://www.tiendaoutsider.com.ar/search?q=Whitesnake"}, {"nombre": "Whitesnake", "genero": "Hard Rock", "url": "https://www.tiendaoutsider.com.ar/search?q=Whitesnake"}, {"nombre": "Wolfbrigade", "genero": "Hardcore - Grindcore - Groove Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Wolfbrigade"}, {"nombre": "Wolfpack", "genero": "Hardcore - Grindcore - Groove Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Wolfpack"}, {"nombre": "Wormrot", "genero": "Hardcore - Grindcore - Groove Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Wormrot"}, {"nombre": "Xentrix", "genero": "Thrash Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Xentrix"}, {"nombre": "Zack Wylde", "genero": "Heavy Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Zack%20Wylde"}, {"nombre": "Zeal and Ardor Stranger Fruit en Remera Blanca", "genero": "Black Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Zeal%20and%20Ardor%20Stranger%20Fruit%20en%20Remera%20Blanca"}, {"nombre": "Zeal and Ardor Stranger Fruit Remera Negra", "genero": "Black Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Zeal%20and%20Ardor%20Stranger%20Fruit%20Remera%20Negra"}, {"nombre": "Zeal and Ardor Zeal and Ardor Album en Remera Blanca", "genero": "Black Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Zeal%20and%20Ardor%20Zeal%20and%20Ardor%20Album%20en%20Remera%20Blanca"}, {"nombre": "Zeal and Ardor Zeal and Ardor Album Remera Negra", "genero": "Black Metal", "url": "https://www.tiendaoutsider.com.ar/search?q=Zeal%20and%20Ardor%20Zeal%20and%20Ardor%20Album%20Remera%20Negra"}];
+
+const COLORES = {"Black Metal": "#9b30ff", "Death Metal": "#cc2200", "Thrash Metal": "#e05500", "Heavy Metal": "#888888", "Doom Metal": "#4a8a4e", "Power Metal": "#3a6abe", "Metal Progresivo": "#3a8aae", "Metalcore": "#8a4dc2", "Nu Metal": "#c27a00", "Hardcore - Grindcore - Groove Metal": "#cc3333", "Hard Rock": "#cc3333", "Glam Rock": "#cc44aa", "Dark - New Wave - Post Punk": "#4a6aae", "Punk Rock": "#aa7700", "Pop Punk": "#aa8800", "Folk": "#6a8a4a", "Funk": "#aa6600"};
+
+let filtroGenero = 'todos';
+let filtroBusqueda = '';
+
+function badge(genero) {
+  const color = COLORES[genero] || '#888';
+  return `<span class="artista-badge" style="background:${color}22; color:${color}; border:1px solid ${color}44">${genero}</span>`;
+}
+
+function render() {
+  const main = document.getElementById('main');
+  const sinRes = document.getElementById('sin-resultados');
+  const contador = document.getElementById('contador');
+
+  const q = filtroBusqueda.toLowerCase().trim();
+
+  const filtrados = ARTISTAS.filter(a => {
+    const matchGenero = filtroGenero === 'todos' || a.genero === filtroGenero;
+    const matchBusqueda = !q || a.nombre.toLowerCase().includes(q);
+    return matchGenero && matchBusqueda;
+  });
+
+  contador.textContent = filtrados.length + ' artistas';
+
+  // Agrupar por letra
+  const grupos = {};
+  filtrados.forEach(a => {
+    const l = a.nombre[0].toUpperCase();
+    if (!grupos[l]) grupos[l] = [];
+    grupos[l].push(a);
+  });
+
+  const letrasOrdenadas = Object.keys(grupos).sort();
+
+  if (filtrados.length === 0) {
+    main.innerHTML = '';
+    sinRes.style.display = 'block';
+    return;
+  }
+
+  sinRes.style.display = 'none';
+
+  main.innerHTML = letrasOrdenadas.map(l => `
+    <div class="letra-bloque" id="letra-${l}">
+      <div class="letra-titulo">${l}</div>
+      <div class="artistas-grid">
+        ${grupos[l].map(a => `
+          <a class="artista-card" href="${a.url}" target="_blank">
+            <span class="artista-nombre">${a.nombre}</span>
+            ${badge(a.genero)}
+          </a>
+        `).join('')}
+      </div>
+    </div>
+  `).join('');
+}
+
+// Filtro género
+document.querySelectorAll('.btn-genero').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.btn-genero').forEach(b => {
+      b.classList.remove('activo');
+      b.style.background = '';
+      b.style.color = '';
+    });
+    btn.classList.add('activo');
+    if (btn.dataset.genero === 'todos') {
+      btn.style.background = '#c8a96e';
+      btn.style.color = '#0d0d0d';
+    } else {
+      const c = COLORES[btn.dataset.genero] || '#888';
+      btn.style.background = c;
+      btn.style.color = '#0d0d0d';
+    }
+    filtroGenero = btn.dataset.genero;
+    render();
+  });
+});
+
+// Buscador
+document.getElementById('buscador').addEventListener('input', e => {
+  filtroBusqueda = e.target.value;
+  render();
+});
+
+render();
+</script>
+</body>
+</html>
