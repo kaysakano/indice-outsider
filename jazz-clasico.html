@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jazz · Clásico / Ópera – Tienda Outsider</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: #fff; color: #444; font-family: Arial, Helvetica, sans-serif; font-size: 15px; line-height: 1.6; }
+header { background: #fff; padding: 14px 32px; border-bottom: 1px solid #ddd; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; }
+header img { height: 38px; display: block; }
+header a.back { color: #888; text-decoration: none; font-size: 0.82rem; }
+header a.back:hover { color: #333; }
+.page-title { padding: 24px 32px 4px; max-width: 980px; margin: 0 auto; }
+.page-title h1 { font-size: 1.2rem; font-weight: 700; color: #333; margin-bottom: 4px; }
+.page-title p { font-size: 0.82rem; color: #999; }
+main { max-width: 980px; margin: 0 auto; padding: 16px 32px 80px; }
+.seccion-titulo { font-size: 1.6rem; font-weight: 900; color: #333; margin: 36px 0 8px; padding-bottom: 8px; border-bottom: 2px solid #333; }
+h2 { font-size: 1.4rem; font-weight: 900; color: #333; margin: 24px 0 8px; padding-bottom: 5px; border-bottom: 1px solid #e0e0e0; }
+.artistas-line { color: #666; margin-bottom: 6px; line-height: 2.1; }
+.artistas-line a { color: #555; text-decoration: none; }
+.artistas-line a:hover { color: #111; text-decoration: underline; }
+#btn-editar { position: fixed; bottom: 24px; right: 24px; background: #333; color: #fff; border: none; padding: 11px 20px; border-radius: 4px; font-size: 0.85rem; cursor: pointer; z-index: 200; font-family: inherit; box-shadow: 0 2px 8px rgba(0,0,0,0.2); }
+#btn-editar:hover { background: #111; }
+#btn-descargar { position: fixed; bottom: 68px; right: 24px; background: #fff; color: #333; border: 1px solid #333; padding: 11px 20px; border-radius: 4px; font-size: 0.85rem; cursor: pointer; z-index: 200; font-family: inherit; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+#btn-descargar:hover { background: #f5f5f5; }
+#panel { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 300; align-items: center; justify-content: center; }
+#panel.open { display: flex; }
+#panel-inner { background: #fff; border-radius: 6px; padding: 28px 28px 24px; width: 500px; max-width: 95vw; max-height: 90vh; overflow-y: auto; box-shadow: 0 8px 32px rgba(0,0,0,0.25); }
+#panel-inner h3 { font-size: 1rem; font-weight: 700; color: #333; margin-bottom: 18px; }
+.field-group { margin-bottom: 14px; }
+.field-group label { display: block; font-size: 0.78rem; color: #777; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.05em; }
+.field-group input, .field-group select { width: 100%; border: 1px solid #ccc; border-radius: 3px; padding: 8px 10px; font-size: 0.9rem; color: #333; font-family: inherit; outline: none; }
+.field-group input:focus, .field-group select:focus { border-color: #888; }
+.panel-hint { font-size: 0.75rem; color: #aaa; margin-top: 4px; }
+.panel-btns { display: flex; gap: 10px; margin-top: 20px; }
+.btn-add { background: #333; color: #fff; border: none; padding: 9px 18px; border-radius: 3px; font-size: 0.88rem; cursor: pointer; font-family: inherit; flex: 1; }
+.btn-add:hover { background: #111; }
+.btn-cancel { background: #f0f0f0; color: #555; border: none; padding: 9px 18px; border-radius: 3px; font-size: 0.88rem; cursor: pointer; font-family: inherit; }
+.btn-cancel:hover { background: #e0e0e0; }
+.msg-ok { display: none; background: #e8f5e9; color: #2e7d32; border: 1px solid #c8e6c9; border-radius: 3px; padding: 8px 12px; font-size: 0.82rem; margin-top: 12px; }
+.artistas-line a.del-mode { background: #fff3f3; border: 1px solid #ffcccc; border-radius: 2px; padding: 1px 5px; color: #c00; cursor: pointer; }
+.artistas-line a.del-mode:hover { background: #ffcccc; }
+#btn-delete { position: fixed; bottom: 24px; right: 160px; background: #fff; color: #c00; border: 1px solid #c00; padding: 11px 20px; border-radius: 4px; font-size: 0.85rem; cursor: pointer; z-index: 200; font-family: inherit; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+#btn-delete:hover { background: #fff3f3; }
+#btn-delete.active { background: #c00; color: #fff; }
+footer { background: #f8f8f8; border-top: 1px solid #e0e0e0; padding: 22px 32px; text-align: center; font-size: 0.75rem; color: #aaa; }
+footer a { color: #888; text-decoration: none; margin: 0 10px; }
+footer a:hover { color: #333; }
+@media(max-width:600px){ header, .page-title, main { padding-left: 16px; padding-right: 16px; } #btn-delete { right: 130px; } }
+</style>
+</head>
+<body>
+<header>
+  <a href="https://www.tiendaoutsider.com.ar"><img src="https://d22fxaf9t8d39k.cloudfront.net/830d3c7e016dad08c5d77f3ef1d8e2c0ac0f65a15dc7cd18c3b3f15be4c6aecf67088.png" alt="Tienda Outsider"></a>
+  <a class="back" href="https://www.tiendaoutsider.com.ar">← Volver a la tienda</a>
+</header>
+<div class="page-title">
+  <h1>Jazz · Clásico / Ópera – Índice de Artistas</h1>
+  <p>Hacé click en cualquier artista para ver sus productos</p>
+</div>
+<main id="indice"></main>
+<footer>
+  <a href="https://www.tiendaoutsider.com.ar">tiendaoutsider.com.ar</a>
+  <a href="https://www.tiendaoutsider.com.ar/musica-por-genero/jazz">Jazz</a>
+  <a href="https://www.tiendaoutsider.com.ar/musica-por-genero/clasico-opera">Clásico · Ópera</a>
+  <a href="https://instagram.com/tienda_outsider" target="_blank">@tienda_outsider</a>
+</footer>
+<button id="btn-delete" onclick="toggleDeleteMode()">🗑 Eliminar</button>
+<button id="btn-descargar" onclick="descargarHTML()">⬇ Descargar actualizado</button>
+<button id="btn-editar" onclick="abrirPanel()">+ Agregar</button>
+<div id="panel">
+  <div id="panel-inner">
+    <h3>Agregar artista</h3>
+    <div class="field-group">
+      <label>Sección</label>
+      <select id="inp-seccion">
+        <option value="jazz">Jazz</option>
+        <option value="clasico">Clásico / Ópera</option>
+      </select>
+    </div>
+    <div class="field-group"><label>Nombre</label><input type="text" id="inp-nombre" placeholder="Ej: Miles Davis"></div>
+    <div class="field-group"><label>URL</label><input type="text" id="inp-url" placeholder="Se genera automáticamente"><div class="panel-hint">Podés editarla si querés apuntar a una página específica</div></div>
+    <div class="panel-btns"><button class="btn-add" onclick="agregarArtista()">Agregar</button><button class="btn-cancel" onclick="cerrarPanel()">Cancelar</button></div>
+    <div class="msg-ok" id="msg-ok">✓ Agregado correctamente</div>
+  </div>
+</div>
+<script>
+const SECCIONES = {
+  jazz: {
+    titulo: "Jazz",
+    artistas: [
+      {n:"A&M Records",u:"https://www.tiendaoutsider.com.ar/search?q=am+records"},
+      {n:"Al Di Meola",u:"https://www.tiendaoutsider.com.ar/search?q=Al+Di+Meola"},
+      {n:"Al Di Meola, John Mc Laughlin, Paco de Lucía",u:"https://www.tiendaoutsider.com.ar/search?q=Al+Di+Meola+John+Mc+Laughlin+Paco+de+Luc%C3%ADa"},
+      {n:"Art Blakey",u:"https://www.tiendaoutsider.com.ar/search?q=Art+Blakey"},
+      {n:"Bill Evans",u:"https://www.tiendaoutsider.com.ar/search?q=Bill+Evans"},
+      {n:"Billy Cobham",u:"https://www.tiendaoutsider.com.ar/search?q=Billy+Cobham"},
+      {n:"Blue Note",u:"https://www.tiendaoutsider.com.ar/search?q=Blue+Note"},
+      {n:"Blue Note Sello Discografico",u:"https://www.tiendaoutsider.com.ar/search?q=blue+note"},
+      {n:"Brad Mehldau",u:"https://www.tiendaoutsider.com.ar/search?q=Brad+Mehldau"},
+      {n:"Cannonball Adderley",u:"https://www.tiendaoutsider.com.ar/search?q=Cannonball+Adderley"},
+      {n:"Charles Mingus",u:"https://www.tiendaoutsider.com.ar/search?q=Charles+Mingus"},
+      {n:"Chet Baker",u:"https://www.tiendaoutsider.com.ar/search?q=Chet+Baker"},
+      {n:"Chick Corea",u:"https://www.tiendaoutsider.com.ar/search?q=Chick+Corea"},
+      {n:"Clube Da Esquina",u:"https://www.tiendaoutsider.com.ar/search?q=Clube+Da+Esquina"},
+      {n:"Djavan",u:"https://www.tiendaoutsider.com.ar/search?q=djavan"},
+      {n:"ECM Records",u:"https://www.tiendaoutsider.com.ar/search?q=ecm"},
+      {n:"Egberto Gismonti",u:"https://www.tiendaoutsider.com.ar/search?q=Egberto+Gismonti"},
+      {n:"Festival de Jazz de Montreux",u:"https://www.tiendaoutsider.com.ar/search?q=montreux"},
+      {n:"Frank Zappa",u:"https://www.tiendaoutsider.com.ar/search?q=Frank+Zappa"},
+      {n:"Gibson Guitars",u:"https://www.tiendaoutsider.com.ar/search?q=Gibson"},
+      {n:"Herbie Hancock",u:"https://www.tiendaoutsider.com.ar/search?q=Herbie+Hancock"},
+      {n:"Hermeto Pascoal",u:"https://www.tiendaoutsider.com.ar/search?q=Hermeto+Pascoal"},
+      {n:"Hiatus Kaiyote",u:"https://www.tiendaoutsider.com.ar/search?q=Hiatus+Kaiyote"},
+      {n:"Hiroshi Suzuki",u:"https://www.tiendaoutsider.com.ar/search?q=Hiroshi+Suzuki"},
+      {n:"Jaco Pastorius",u:"https://www.tiendaoutsider.com.ar/search?q=Jaco+Pastorius"},
+      {n:"Jan Hammer",u:"https://www.tiendaoutsider.com.ar/search?q=Jan+Hammer"},
+      {n:"Jean-Luc Ponty",u:"https://www.tiendaoutsider.com.ar/search?q=jean-luc+ponty"},
+      {n:"Joao Gilberto",u:"https://www.tiendaoutsider.com.ar/search?q=Joao+Gilberto"},
+      {n:"John Coltrane",u:"https://www.tiendaoutsider.com.ar/search?q=John+Coltrane"},
+      {n:"Joni Mitchell",u:"https://www.tiendaoutsider.com.ar/search?q=Joni+Mitchell"},
+      {n:"Keith Jarrett",u:"https://www.tiendaoutsider.com.ar/search?q=Keith+Jarrett"},
+      {n:"Kenny Burrell",u:"https://www.tiendaoutsider.com.ar/search?q=Kenny+Burrell"},
+      {n:"Lee Morgan",u:"https://www.tiendaoutsider.com.ar/search?q=Lee+Morgan"},
+      {n:"Mahavishnu Orchestra",u:"https://www.tiendaoutsider.com.ar/search?q=Mahavishnu+orchestra"},
+      {n:"Medeski Martin and Wood",u:"https://www.tiendaoutsider.com.ar/search?q=Medeski+Martin+and+Wood"},
+      {n:"Miles Davis",u:"https://www.tiendaoutsider.com.ar/search?q=Miles+Davis"},
+      {n:"Pharoah Sanders",u:"https://www.tiendaoutsider.com.ar/search?q=Pharoah+Sanders"},
+      {n:"Quincy Jones",u:"https://www.tiendaoutsider.com.ar/search?q=Quincy+Jones"},
+      {n:"Ray Charles",u:"https://www.tiendaoutsider.com.ar/search?q=Ray+Charles"},
+      {n:"Ronnie Scott's Jazz Club",u:"https://www.tiendaoutsider.com.ar/search?q=Ronnie+Scott"},
+      {n:"Sade",u:"https://www.tiendaoutsider.com.ar/search?q=Sade"},
+      {n:"Snarky Puppy",u:"https://www.tiendaoutsider.com.ar/search?q=Snarky+Puppy"},
+      {n:"Sonny Rollins",u:"https://www.tiendaoutsider.com.ar/search?q=Sonny+Rollins"},
+      {n:"Stan Getz",u:"https://www.tiendaoutsider.com.ar/search?q=Stan+Getz"},
+      {n:"Stanley Clarke",u:"https://www.tiendaoutsider.com.ar/search?q=Stanley+Clarke"},
+      {n:"Sun Ra",u:"https://www.tiendaoutsider.com.ar/search?q=Sun+Ra"},
+      {n:"Thelonious Monk",u:"https://www.tiendaoutsider.com.ar/search?q=Thelonious+Monk"},
+      {n:"Tim Maia",u:"https://www.tiendaoutsider.com.ar/search?q=Tim+Maia"},
+      {n:"Tom Waits",u:"https://www.tiendaoutsider.com.ar/search?q=Tom+Waits"},
+      {n:"Toquinho",u:"https://www.tiendaoutsider.com.ar/search?q=Toquinho"},
+      {n:"Vinicius De Moraes",u:"https://www.tiendaoutsider.com.ar/search?q=Vinicius+De+Moraes"},
+      {n:"Wayne Shorter",u:"https://www.tiendaoutsider.com.ar/search?q=Wayne+Shorter"},
+      {n:"Weather Report",u:"https://www.tiendaoutsider.com.ar/search?q=Weather+Report"},
+      {n:"Yussef Kamaal",u:"https://www.tiendaoutsider.com.ar/search?q=Yussef+Kamaal"}
+    ]
+  },
+  clasico: {
+    titulo: "Clásico / Ópera",
+    artistas: [
+      {n:"Antonio Vivaldi",u:"https://www.tiendaoutsider.com.ar/search?q=Antonio+Vivaldi"},
+      {n:"Arvo Pärt",u:"https://www.tiendaoutsider.com.ar/search?q=arvo+part"},
+      {n:"ECM Records",u:"https://www.tiendaoutsider.com.ar/search?q=ecm"},
+      {n:"Ennio Morricone",u:"https://www.tiendaoutsider.com.ar/search?q=Ennio+Morricone"},
+      {n:"Frederic Chopin",u:"https://www.tiendaoutsider.com.ar/search?q=Frederic+Chopin"},
+      {n:"Giacomo Puccini",u:"https://www.tiendaoutsider.com.ar/search?q=Giacomo+Puccini"},
+      {n:"Johann Sebastian Bach",u:"https://www.tiendaoutsider.com.ar/search?q=Johann+Sebastian+Bach"},
+      {n:"Keith Jarrett",u:"https://www.tiendaoutsider.com.ar/search?q=Keith+Jarrett"},
+      {n:"Luciano Pavarotti",u:"https://www.tiendaoutsider.com.ar/search?q=Luciano+Pavarotti"},
+      {n:"Ludwig Van Beethoven",u:"https://www.tiendaoutsider.com.ar/search?q=beethoven"},
+      {n:"Madama Butterfly",u:"https://www.tiendaoutsider.com.ar/search?q=Madama+Butterfly"},
+      {n:"Max Richter",u:"https://www.tiendaoutsider.com.ar/search?q=Max+Richter"},
+      {n:"Pyotr Ilyich Tchaikovsky",u:"https://www.tiendaoutsider.com.ar/search?q=Pyotr+Ilyich+Tchaikovsky"},
+      {n:"Ryuichi Sakamoto",u:"https://www.tiendaoutsider.com.ar/search?q=Ryuichi+Sakamoto"},
+      {n:"Turandot",u:"https://www.tiendaoutsider.com.ar/search?q=Turandot"}
+    ]
+  }
+};
+
+const ORDEN = ['jazz','clasico'];
+let modoEliminar = false;
+
+function sortKey(n){ return n.replace(/^(The |Los |Las )/i,'').toLowerCase(); }
+
+function renderSeccion(key){
+  const arr = [...SECCIONES[key].artistas].sort((a,b) => sortKey(a.n).localeCompare(sortKey(b.n),'es'));
+  const grupos = {};
+  arr.forEach(a => {
+    const l = sortKey(a.n)[0].toUpperCase();
+    if(!grupos[l]) grupos[l] = [];
+    grupos[l].push(a);
+  });
+  return Object.keys(grupos).sort().map(l => {
+    const links = grupos[l].map(a => {
+      const cls = modoEliminar ? ' class="del-mode"' : '';
+      const oc = modoEliminar ? ` onclick="eliminar('${key}','${a.n.replace(/'/g,"\\'")}');return false;"` : '';
+      return `<a href="${a.u}"${cls}${oc} target="_blank">${a.n}</a>`;
+    }).join(' · ');
+    return `<h2>${l}</h2><p class="artistas-line">${links}</p>`;
+  }).join('');
+}
+
+function render(){
+  document.getElementById('indice').innerHTML = ORDEN.map((key, i) =>
+    `<div class="seccion-titulo"${i > 0 ? ' style="margin-top:52px"' : ''}>${SECCIONES[key].titulo}</div>` +
+    renderSeccion(key)
+  ).join('');
+}
+
+function abrirPanel(){ document.getElementById('panel').classList.add('open'); document.getElementById('inp-nombre').focus(); document.getElementById('msg-ok').style.display='none'; }
+function cerrarPanel(){ document.getElementById('panel').classList.remove('open'); document.getElementById('inp-nombre').value=''; document.getElementById('inp-url').value=''; }
+
+document.getElementById('inp-nombre').addEventListener('input', function(){
+  const q = this.value.trim().replace(/ /g,'+');
+  document.getElementById('inp-url').value = q ? 'https://www.tiendaoutsider.com.ar/search?q='+q : '';
+});
+
+function agregarArtista(){
+  const nombre = document.getElementById('inp-nombre').value.trim();
+  const url = document.getElementById('inp-url').value.trim();
+  const key = document.getElementById('inp-seccion').value;
+  if(!nombre){ alert('Ingresá el nombre'); return; }
+  if(!url){ alert('Ingresá la URL'); return; }
+  if(SECCIONES[key].artistas.find(a => a.n.toLowerCase() === nombre.toLowerCase())){ alert('Ya está en esa sección'); return; }
+  SECCIONES[key].artistas.push({n:nombre, u:url});
+  render();
+  document.getElementById('msg-ok').style.display='block';
+  document.getElementById('inp-nombre').value='';
+  document.getElementById('inp-url').value='';
+  document.getElementById('inp-nombre').focus();
+}
+
+function toggleDeleteMode(){
+  modoEliminar = !modoEliminar;
+  const btn = document.getElementById('btn-delete');
+  btn.textContent = modoEliminar ? '✓ Salir' : '🗑 Eliminar';
+  btn.classList.toggle('active', modoEliminar);
+  render();
+}
+
+function eliminar(key, nombre){
+  if(!confirm('¿Eliminar "'+nombre+'"?')) return;
+  const arr = SECCIONES[key].artistas;
+  arr.splice(arr.findIndex(a=>a.n===nombre), 1);
+  render();
+}
+
+function descargarHTML(){
+  const blob = new Blob([document.documentElement.outerHTML], {type:'text/html;charset=utf-8'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'jazz-clasico.html';
+  a.click();
+}
+
+document.addEventListener('keydown', e => { if(e.key==='Escape') cerrarPanel(); });
+document.getElementById('panel').addEventListener('click', e => { if(e.target===document.getElementById('panel')) cerrarPanel(); });
+
+render();
+</script>
+</body>
+</html>

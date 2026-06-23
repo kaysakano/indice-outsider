@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Random · Comics · Manga Anime – Tienda Outsider</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: #fff; color: #444; font-family: Arial, Helvetica, sans-serif; font-size: 15px; line-height: 1.6; }
+header { background: #fff; padding: 14px 32px; border-bottom: 1px solid #ddd; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; }
+header img { height: 38px; display: block; }
+header a.back { color: #888; text-decoration: none; font-size: 0.82rem; }
+header a.back:hover { color: #333; }
+.page-title { padding: 24px 32px 4px; max-width: 980px; margin: 0 auto; }
+.page-title h1 { font-size: 1.2rem; font-weight: 700; color: #333; margin-bottom: 4px; }
+.page-title p { font-size: 0.82rem; color: #999; }
+main { max-width: 980px; margin: 0 auto; padding: 16px 32px 80px; }
+.seccion-titulo { font-size: 1.6rem; font-weight: 900; color: #333; margin: 36px 0 8px; padding-bottom: 8px; border-bottom: 2px solid #333; }
+h2 { font-size: 1.4rem; font-weight: 900; color: #333; margin: 24px 0 8px; padding-bottom: 5px; border-bottom: 1px solid #e0e0e0; }
+.artistas-line { color: #666; margin-bottom: 6px; line-height: 2.1; }
+.artistas-line a { color: #555; text-decoration: none; }
+.artistas-line a:hover { color: #111; text-decoration: underline; }
+#btn-editar { position: fixed; bottom: 24px; right: 24px; background: #333; color: #fff; border: none; padding: 11px 20px; border-radius: 4px; font-size: 0.85rem; cursor: pointer; z-index: 200; font-family: inherit; box-shadow: 0 2px 8px rgba(0,0,0,0.2); }
+#btn-editar:hover { background: #111; }
+#btn-descargar { position: fixed; bottom: 68px; right: 24px; background: #fff; color: #333; border: 1px solid #333; padding: 11px 20px; border-radius: 4px; font-size: 0.85rem; cursor: pointer; z-index: 200; font-family: inherit; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+#btn-descargar:hover { background: #f5f5f5; }
+#panel { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 300; align-items: center; justify-content: center; }
+#panel.open { display: flex; }
+#panel-inner { background: #fff; border-radius: 6px; padding: 28px 28px 24px; width: 500px; max-width: 95vw; max-height: 90vh; overflow-y: auto; box-shadow: 0 8px 32px rgba(0,0,0,0.25); }
+#panel-inner h3 { font-size: 1rem; font-weight: 700; color: #333; margin-bottom: 18px; }
+.field-group { margin-bottom: 14px; }
+.field-group label { display: block; font-size: 0.78rem; color: #777; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.05em; }
+.field-group input, .field-group select { width: 100%; border: 1px solid #ccc; border-radius: 3px; padding: 8px 10px; font-size: 0.9rem; color: #333; font-family: inherit; outline: none; }
+.field-group input:focus, .field-group select:focus { border-color: #888; }
+.panel-hint { font-size: 0.75rem; color: #aaa; margin-top: 4px; }
+.panel-btns { display: flex; gap: 10px; margin-top: 20px; }
+.btn-add { background: #333; color: #fff; border: none; padding: 9px 18px; border-radius: 3px; font-size: 0.88rem; cursor: pointer; font-family: inherit; flex: 1; }
+.btn-add:hover { background: #111; }
+.btn-cancel { background: #f0f0f0; color: #555; border: none; padding: 9px 18px; border-radius: 3px; font-size: 0.88rem; cursor: pointer; font-family: inherit; }
+.btn-cancel:hover { background: #e0e0e0; }
+.msg-ok { display: none; background: #e8f5e9; color: #2e7d32; border: 1px solid #c8e6c9; border-radius: 3px; padding: 8px 12px; font-size: 0.82rem; margin-top: 12px; }
+.artistas-line a.del-mode { background: #fff3f3; border: 1px solid #ffcccc; border-radius: 2px; padding: 1px 5px; color: #c00; cursor: pointer; }
+.artistas-line a.del-mode:hover { background: #ffcccc; }
+#btn-delete { position: fixed; bottom: 24px; right: 160px; background: #fff; color: #c00; border: 1px solid #c00; padding: 11px 20px; border-radius: 4px; font-size: 0.85rem; cursor: pointer; z-index: 200; font-family: inherit; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+#btn-delete:hover { background: #fff3f3; }
+#btn-delete.active { background: #c00; color: #fff; }
+footer { background: #f8f8f8; border-top: 1px solid #e0e0e0; padding: 22px 32px; text-align: center; font-size: 0.75rem; color: #aaa; }
+footer a { color: #888; text-decoration: none; margin: 0 10px; }
+footer a:hover { color: #333; }
+@media(max-width:600px){ header, .page-title, main { padding-left: 16px; padding-right: 16px; } #btn-delete { right: 130px; } }
+</style>
+</head>
+<body>
+
+<header>
+  <a href="https://www.tiendaoutsider.com.ar"><img src="https://d22fxaf9t8d39k.cloudfront.net/830d3c7e016dad08c5d77f3ef1d8e2c0ac0f65a15dc7cd18c3b3f15be4c6aecf67088.png" alt="Tienda Outsider"></a>
+  <a class="back" href="https://www.tiendaoutsider.com.ar">← Volver a la tienda</a>
+</header>
+
+<div class="page-title">
+  <h1>Random · Comics · Manga Anime – Índice</h1>
+  <p>Hacé click en cualquier nombre para ver sus productos</p>
+</div>
+
+<main id="indice"></main>
+
+<footer>
+  <a href="https://www.tiendaoutsider.com.ar">tiendaoutsider.com.ar</a>
+  <a href="https://www.tiendaoutsider.com.ar/random">Random</a>
+  <a href="https://www.tiendaoutsider.com.ar/comics">Comics</a>
+  <a href="https://www.tiendaoutsider.com.ar/anime-manga">Anime · Manga</a>
+  <a href="https://instagram.com/tienda_outsider" target="_blank">@tienda_outsider</a>
+</footer>
+
+<button id="btn-delete" onclick="toggleDeleteMode()">🗑 Eliminar</button>
+<button id="btn-descargar" onclick="descargarHTML()">⬇ Descargar actualizado</button>
+<button id="btn-editar" onclick="abrirPanel()">+ Agregar</button>
+
+<div id="panel">
+  <div id="panel-inner">
+    <h3>Agregar entrada</h3>
+    <div class="field-group">
+      <label>Sección</label>
+      <select id="inp-seccion">
+        <option value="random">Random</option>
+        <option value="comics">Comics</option>
+        <option value="manga">Manga Anime</option>
+      </select>
+    </div>
+    <div class="field-group"><label>Nombre</label><input type="text" id="inp-nombre" placeholder="Ej: Atari"></div>
+    <div class="field-group"><label>URL</label><input type="text" id="inp-url" placeholder="Se genera automáticamente"><div class="panel-hint">Podés editarla si querés apuntar a una página específica</div></div>
+    <div class="panel-btns"><button class="btn-add" onclick="agregarArtista()">Agregar</button><button class="btn-cancel" onclick="cerrarPanel()">Cancelar</button></div>
+    <div class="msg-ok" id="msg-ok">✓ Agregado correctamente</div>
+  </div>
+</div>
+
+<script>
+const SECCIONES = {
+  random: {
+    titulo: "Random",
+    artistas: [
+      {n:"1942 Video Juego",u:"https://www.tiendaoutsider.com.ar/search?q=1942"},
+      {n:"7 Eleven Convenience Stores",u:"https://www.tiendaoutsider.com.ar/search?q=7+Eleven"},
+      {n:"Akita Inu Perro",u:"https://www.tiendaoutsider.com.ar/search?q=akita"},
+      {n:"Atari",u:"https://www.tiendaoutsider.com.ar/search?q=Atari"},
+      {n:"Avax Avalanche (Cryptomoneda)",u:"https://www.tiendaoutsider.com.ar/search?q=avax"},
+      {n:"Barney",u:"https://www.tiendaoutsider.com.ar/search?q=Barney"},
+      {n:"Cambio Climático",u:"https://www.tiendaoutsider.com.ar/search?q=Cambio+Clim%C3%A1tico"},
+      {n:"Cannabis",u:"https://www.tiendaoutsider.com.ar/search?q=Cannabis"},
+      {n:"Cardano (Cryptomoneda)",u:"https://www.tiendaoutsider.com.ar/search?q=Cardano"},
+      {n:"Cherry Coke",u:"https://www.tiendaoutsider.com.ar/search?q=Cherry+Coke"},
+      {n:"Cherry 7UP",u:"https://www.tiendaoutsider.com.ar/search?q=Cherry+7UP"},
+      {n:"Cognac Monnet",u:"https://www.tiendaoutsider.com.ar/search?q=cognac+monnet"},
+      {n:"Comic Sans",u:"https://www.tiendaoutsider.com.ar/search?q=comic+sans"},
+      {n:"Commodore 64",u:"https://www.tiendaoutsider.com.ar/search?q=Commodore+64"},
+      {n:"Ethereum (Cryptomoneda)",u:"https://www.tiendaoutsider.com.ar/search?q=Ethereum"},
+      {n:"Fraggle Rock",u:"https://www.tiendaoutsider.com.ar/search?q=Fraggle+Rock"},
+      {n:"Futbol",u:"https://www.tiendaoutsider.com.ar/search?q=Futbol"},
+      {n:"Gatos. Gatitos",u:"https://www.tiendaoutsider.com.ar/search?q=gatito"},
+      {n:"Gold's Gym",u:"https://www.tiendaoutsider.com.ar/search?q=gym"},
+      {n:"Govern Your Soul!",u:"https://www.tiendaoutsider.com.ar/search?q=Govern+Your+Soul!"},
+      {n:"GTA Grand Theft Auto",u:"https://www.tiendaoutsider.com.ar/search?q=gta"},
+      {n:"Hachiko The Akita Dog",u:"https://www.tiendaoutsider.com.ar/search?q=hachiko"},
+      {n:"Hans and Botho von Romer",u:"https://www.tiendaoutsider.com.ar/search?q=Hans+and+Botho+von+Romer"},
+      {n:"Hello Kitty",u:"https://www.tiendaoutsider.com.ar/search?q=Hello+Kitty"},
+      {n:"Helvetica Fuente",u:"https://www.tiendaoutsider.com.ar/search?q=Helvetica"},
+      {n:"Instagram",u:"https://www.tiendaoutsider.com.ar/search?q=Instagram"},
+      {n:"Lilo y Stitch",u:"https://www.tiendaoutsider.com.ar/search?q=Lilo+y+Stitch"},
+      {n:"Los Autos Locos",u:"https://www.tiendaoutsider.com.ar/search?q=los+autos+locos"},
+      {n:"Ludwig Hohlwein",u:"https://www.tiendaoutsider.com.ar/search?q=Ludwig+Hohlwein"},
+      {n:"Marantz Audio",u:"https://www.tiendaoutsider.com.ar/search?q=marantz"},
+      {n:"Marco Polo Tee",u:"https://www.tiendaoutsider.com.ar/search?q=Marco+Polo+Tee"},
+      {n:"Mc Donalds",u:"https://www.tiendaoutsider.com.ar/search?q=Mc+Donalds"},
+      {n:"Milli Vanilli",u:"https://www.tiendaoutsider.com.ar/search?q=Milli+Vanilli"},
+      {n:"Napster",u:"https://www.tiendaoutsider.com.ar/search?q=Napster"},
+      {n:"Nebulosa de Orión",u:"https://www.tiendaoutsider.com.ar/search?q=nebulosa+de+ori%C3%B3n"},
+      {n:"Nian Hua Chinos",u:"https://www.tiendaoutsider.com.ar/search?q=nian+hua"},
+      {n:"Only Farts",u:"https://www.tiendaoutsider.com.ar/search?q=Only+Farts"},
+      {n:"Osos Ositos",u:"https://www.tiendaoutsider.com.ar/search?q=Osos"},
+      {n:"Peanuts (Snoopy)",u:"https://www.tiendaoutsider.com.ar/search?q=Snoopy"},
+      {n:"Perros",u:"https://www.tiendaoutsider.com.ar/search?q=perrito"},
+      {n:"Plancton (Colección Nerd)",u:"https://www.tiendaoutsider.com.ar/search?q=nerd"},
+      {n:"Play-Doh Juguetes Retro",u:"https://www.tiendaoutsider.com.ar/search?q=Play-Doh"},
+      {n:"Pokemon",u:"https://www.tiendaoutsider.com.ar/search?q=Pokemon"},
+      {n:"Polkadot (Cryptomoneda)",u:"https://www.tiendaoutsider.com.ar/search?q=Polkadot"},
+      {n:"Ramen",u:"https://www.tiendaoutsider.com.ar/search?q=ramen."},
+      {n:"Ren And Stimpy",u:"https://www.tiendaoutsider.com.ar/search?q=Ren+And+Stimpy"},
+      {n:"René Gruau",u:"https://www.tiendaoutsider.com.ar/search?q=rene+gruau"},
+      {n:"San Expedito",u:"https://www.tiendaoutsider.com.ar/search?q=San+Expedito"},
+      {n:"San Miguel Arcangel",u:"https://www.tiendaoutsider.com.ar/search?q=San+Miguel+Arcangel"},
+      {n:"Sega",u:"https://www.tiendaoutsider.com.ar/search?q=Sega"},
+      {n:"Sesame Street",u:"https://www.tiendaoutsider.com.ar/search?q=Sesame+Street"},
+      {n:"Shiba Inu (Cryptomoneda)",u:"https://www.tiendaoutsider.com.ar/search?q=Shiba+Inu"},
+      {n:"Solana (Cryptomoneda)",u:"https://www.tiendaoutsider.com.ar/search?q=Solana"},
+      {n:"Space Invaders",u:"https://www.tiendaoutsider.com.ar/search?q=Space+Invaders"},
+      {n:"Sriracha Salsa",u:"https://www.tiendaoutsider.com.ar/search?q=sriracha"},
+      {n:"Street Fighter",u:"https://www.tiendaoutsider.com.ar/search?q=Street+Fighter"},
+      {n:"Sumo Nagoya 1983",u:"https://www.tiendaoutsider.com.ar/search?q=sumo"},
+      {n:"Triumph Motorcycle",u:"https://www.tiendaoutsider.com.ar/search?q=triumph+motorcycle"},
+      {n:"Video Juego",u:"https://www.tiendaoutsider.com.ar/search?q=Video+Juego"},
+      {n:"Winamp",u:"https://www.tiendaoutsider.com.ar/search?q=Winamp"}
+    ]
+  },
+  comics: {
+    titulo: "Comics",
+    artistas: [
+      {n:"Alberto Breccia",u:"https://www.tiendaoutsider.com.ar/search?q=Alberto+Breccia"},
+      {n:"Robert Crumb",u:"https://www.tiendaoutsider.com.ar/search?q=Robert+crumb"},
+      {n:"Mort Cinder",u:"https://www.tiendaoutsider.com.ar/search?q=Mort+Cinder"},
+      {n:"Peanuts (Snoopy)",u:"https://www.tiendaoutsider.com.ar/search?q=Snoopy"},
+      {n:"Pokemon",u:"https://www.tiendaoutsider.com.ar/search?q=Pokemon"},
+      {n:"Popeye",u:"https://www.tiendaoutsider.com.ar/search?q=popeye"},
+      {n:"Vampirella",u:"https://www.tiendaoutsider.com.ar/search?q=Vampirella"}
+    ]
+  },
+  manga: {
+    titulo: "Manga Anime",
+    artistas: [
+      {n:"Attack on Titan - Shingeki No Kyojin",u:"https://www.tiendaoutsider.com.ar/search?q=Attack+on+Titan"},
+      {n:"Death Note",u:"https://www.tiendaoutsider.com.ar/search?q=Death+Note"},
+      {n:"Demon Slayer - Kimetsu no Yaiba",u:"https://www.tiendaoutsider.com.ar/search?q=demon+slayer"},
+      {n:"Ghost in The Shell",u:"https://www.tiendaoutsider.com.ar/search?q=Ghost+in+The+Shell"},
+      {n:"Jujutsu Kaisen",u:"https://www.tiendaoutsider.com.ar/search?q=Jujutsu+Kaisen"},
+      {n:"Pokemon",u:"https://www.tiendaoutsider.com.ar/search?q=Pokemon"},
+      {n:"Shin Chan",u:"https://www.tiendaoutsider.com.ar/search?q=Shin+Chan"}
+    ]
+  }
+};
+
+const ORDEN = ['random','comics','manga'];
+let modoEliminar = false;
+
+function sortKey(n){ return n.replace(/^(The |Los |Las |El |La )/i,'').toLowerCase(); }
+
+function renderSeccion(key){
+  const arr = [...SECCIONES[key].artistas].sort((a,b) => sortKey(a.n).localeCompare(sortKey(b.n),'es'));
+  const grupos = {};
+  arr.forEach(a => {
+    const l = sortKey(a.n)[0].toUpperCase();
+    if(!grupos[l]) grupos[l] = [];
+    grupos[l].push(a);
+  });
+  return Object.keys(grupos).sort().map(l => {
+    const links = grupos[l].map(a => {
+      const cls = modoEliminar ? ' class="del-mode"' : '';
+      const oc = modoEliminar ? ` onclick="eliminar('${key}','${a.n.replace(/'/g,"\\'")}');return false;"` : '';
+      return `<a href="${a.u}"${cls}${oc} target="_blank">${a.n}</a>`;
+    }).join(' · ');
+    return `<h2>${l}</h2><p class="artistas-line">${links}</p>`;
+  }).join('');
+}
+
+function render(){
+  document.getElementById('indice').innerHTML = ORDEN.map((key, i) =>
+    `<div class="seccion-titulo"${i > 0 ? ' style="margin-top:52px"' : ''}>${SECCIONES[key].titulo}</div>` +
+    renderSeccion(key)
+  ).join('');
+}
+
+function abrirPanel(){ document.getElementById('panel').classList.add('open'); document.getElementById('inp-nombre').focus(); document.getElementById('msg-ok').style.display='none'; }
+function cerrarPanel(){ document.getElementById('panel').classList.remove('open'); document.getElementById('inp-nombre').value=''; document.getElementById('inp-url').value=''; }
+
+document.getElementById('inp-nombre').addEventListener('input', function(){
+  const q = this.value.trim().replace(/ /g,'+');
+  document.getElementById('inp-url').value = q ? 'https://www.tiendaoutsider.com.ar/search?q='+q : '';
+});
+
+function agregarArtista(){
+  const nombre = document.getElementById('inp-nombre').value.trim();
+  const url = document.getElementById('inp-url').value.trim();
+  const key = document.getElementById('inp-seccion').value;
+  if(!nombre){ alert('Ingresá el nombre'); return; }
+  if(!url){ alert('Ingresá la URL'); return; }
+  if(SECCIONES[key].artistas.find(a => a.n.toLowerCase() === nombre.toLowerCase())){ alert('Ya está en esa sección'); return; }
+  SECCIONES[key].artistas.push({n:nombre, u:url});
+  render();
+  document.getElementById('msg-ok').style.display='block';
+  document.getElementById('inp-nombre').value='';
+  document.getElementById('inp-url').value='';
+  document.getElementById('inp-nombre').focus();
+}
+
+function toggleDeleteMode(){
+  modoEliminar = !modoEliminar;
+  const btn = document.getElementById('btn-delete');
+  btn.textContent = modoEliminar ? '✓ Salir' : '🗑 Eliminar';
+  btn.classList.toggle('active', modoEliminar);
+  render();
+}
+
+function eliminar(key, nombre){
+  if(!confirm('¿Eliminar "'+nombre+'"?')) return;
+  const arr = SECCIONES[key].artistas;
+  arr.splice(arr.findIndex(a=>a.n===nombre), 1);
+  render();
+}
+
+function descargarHTML(){
+  const blob = new Blob([document.documentElement.outerHTML], {type:'text/html;charset=utf-8'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'random-comics-manga-anime.html';
+  a.click();
+}
+
+document.addEventListener('keydown', e => { if(e.key==='Escape') cerrarPanel(); });
+document.getElementById('panel').addEventListener('click', e => { if(e.target===document.getElementById('panel')) cerrarPanel(); });
+
+render();
+</script>
+</body>
+</html>
