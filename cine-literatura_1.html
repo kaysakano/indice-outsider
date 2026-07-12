@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cine y Series · Literatura – Tienda Outsider</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: #fff; color: #444; font-family: Arial, Helvetica, sans-serif; font-size: 15px; line-height: 1.6; }
+header { background: #fff; padding: 14px 32px; border-bottom: 1px solid #ddd; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; }
+header img { height: 38px; display: block; }
+header a.back { color: #888; text-decoration: none; font-size: 0.82rem; }
+header a.back:hover { color: #333; }
+.page-title { padding: 24px 32px 4px; max-width: 980px; margin: 0 auto; }
+.page-title h1 { font-size: 1.2rem; font-weight: 700; color: #333; margin-bottom: 4px; }
+.page-title p { font-size: 0.82rem; color: #999; }
+main { max-width: 980px; margin: 0 auto; padding: 16px 32px 80px; }
+.seccion-titulo { font-size: 1.6rem; font-weight: 900; color: #333; margin: 36px 0 6px; padding-bottom: 8px; border-bottom: 2px solid #333; }
+.subseccion-titulo { font-size: 1.1rem; font-weight: 700; color: #555; margin: 24px 0 8px; padding-bottom: 4px; border-bottom: 1px solid #e0e0e0; }
+.seccion-separador { margin-top: 52px; }
+h2 { font-size: 1.4rem; font-weight: 900; color: #333; margin: 24px 0 8px; padding-bottom: 5px; border-bottom: 1px solid #e0e0e0; }
+.artistas-line { color: #666; margin-bottom: 6px; line-height: 2.1; }
+.artistas-line a { color: #555; text-decoration: none; }
+.artistas-line a:hover { color: #111; text-decoration: underline; }
+#btn-editar { position: fixed; bottom: 24px; right: 24px; background: #333; color: #fff; border: none; padding: 11px 20px; border-radius: 4px; font-size: 0.85rem; cursor: pointer; z-index: 200; font-family: inherit; box-shadow: 0 2px 8px rgba(0,0,0,0.2); }
+#btn-editar:hover { background: #111; }
+#btn-descargar { position: fixed; bottom: 68px; right: 24px; background: #fff; color: #333; border: 1px solid #333; padding: 11px 20px; border-radius: 4px; font-size: 0.85rem; cursor: pointer; z-index: 200; font-family: inherit; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+#btn-descargar:hover { background: #f5f5f5; }
+#panel { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 300; align-items: center; justify-content: center; }
+#panel.open { display: flex; }
+#panel-inner { background: #fff; border-radius: 6px; padding: 28px 28px 24px; width: 500px; max-width: 95vw; max-height: 90vh; overflow-y: auto; box-shadow: 0 8px 32px rgba(0,0,0,0.25); }
+#panel-inner h3 { font-size: 1rem; font-weight: 700; color: #333; margin-bottom: 18px; }
+.field-group { margin-bottom: 14px; }
+.field-group label { display: block; font-size: 0.78rem; color: #777; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.05em; }
+.field-group input, .field-group select { width: 100%; border: 1px solid #ccc; border-radius: 3px; padding: 8px 10px; font-size: 0.9rem; color: #333; font-family: inherit; outline: none; }
+.field-group input:focus, .field-group select:focus { border-color: #888; }
+.panel-hint { font-size: 0.75rem; color: #aaa; margin-top: 4px; }
+.panel-btns { display: flex; gap: 10px; margin-top: 20px; }
+.btn-add { background: #333; color: #fff; border: none; padding: 9px 18px; border-radius: 3px; font-size: 0.88rem; cursor: pointer; font-family: inherit; flex: 1; }
+.btn-add:hover { background: #111; }
+.btn-cancel { background: #f0f0f0; color: #555; border: none; padding: 9px 18px; border-radius: 3px; font-size: 0.88rem; cursor: pointer; font-family: inherit; }
+.btn-cancel:hover { background: #e0e0e0; }
+.msg-ok { display: none; background: #e8f5e9; color: #2e7d32; border: 1px solid #c8e6c9; border-radius: 3px; padding: 8px 12px; font-size: 0.82rem; margin-top: 12px; }
+.artistas-line a.del-mode { background: #fff3f3; border: 1px solid #ffcccc; border-radius: 2px; padding: 1px 5px; color: #c00; cursor: pointer; }
+.artistas-line a.del-mode:hover { background: #ffcccc; }
+#btn-delete { position: fixed; bottom: 24px; right: 160px; background: #fff; color: #c00; border: 1px solid #c00; padding: 11px 20px; border-radius: 4px; font-size: 0.85rem; cursor: pointer; z-index: 200; font-family: inherit; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+#btn-delete:hover { background: #fff3f3; }
+#btn-delete.active { background: #c00; color: #fff; }
+footer { background: #f8f8f8; border-top: 1px solid #e0e0e0; padding: 22px 32px; text-align: center; font-size: 0.75rem; color: #aaa; }
+footer a { color: #888; text-decoration: none; margin: 0 10px; }
+footer a:hover { color: #333; }
+@media(max-width:600px){ header, .page-title, main { padding-left: 16px; padding-right: 16px; } #btn-delete { right: 130px; } }
+
+#btn-editar, #btn-descargar, #btn-delete { display: none !important; }
+#btn-editar.admin-visible, #btn-descargar.admin-visible, #btn-delete.admin-visible { display: block !important; }
+</style>
+</head>
+<body>
+<header>
+  <a href="https://www.tiendaoutsider.com.ar"><img src="https://d22fxaf9t8d39k.cloudfront.net/830d3c7e016dad08c5d77f3ef1d8e2c0ac0f65a15dc7cd18c3b3f15be4c6aecf67088.png" alt="Tienda Outsider"></a>
+  <a class="back" href="https://www.tiendaoutsider.com.ar">← Volver a la tienda</a>
+</header>
+<div class="page-title">
+  <h1>Cine y Series · Literatura – Índice de Artistas</h1>
+  <p>Hacé click en cualquier nombre para ver sus productos</p>
+</div>
+<main id="indice"></main>
+<footer>
+  <a href="https://www.tiendaoutsider.com.ar">tiendaoutsider.com.ar</a>
+  <a href="https://www.tiendaoutsider.com.ar/cine-y-series">Cine y Series</a>
+  <a href="https://www.tiendaoutsider.com.ar/literatura">Literatura</a>
+  <a href="https://instagram.com/tienda_outsider" target="_blank">@tienda_outsider</a>
+</footer>
+<button id="btn-delete" onclick="toggleDeleteMode()">🗑 Eliminar</button>
+<button id="btn-descargar" onclick="descargarHTML()">⬇ Descargar actualizado</button>
+<button id="btn-editar" onclick="abrirPanel()">+ Agregar</button>
+<div id="panel">
+  <div id="panel-inner">
+    <h3>Agregar entrada</h3>
+    <div class="field-group">
+      <label>Sección</label>
+      <select id="inp-seccion">
+        <option value="directores">Cine / Series – Directores, actores y más</option>
+        <option value="peliculas">Cine / Series – Películas y Series</option>
+        <option value="libros">Literatura – Libros y ensayos</option>
+        <option value="autores">Literatura – Autores y personajes</option>
+      </select>
+    </div>
+    <div class="field-group"><label>Nombre</label><input type="text" id="inp-nombre" placeholder="Ej: Alfred Hitchcock"></div>
+    <div class="field-group"><label>URL</label><input type="text" id="inp-url" placeholder="Se genera automáticamente"><div class="panel-hint">Podés editarla si querés apuntar a una página específica</div></div>
+    <div class="panel-btns"><button class="btn-add" onclick="agregarArtista()">Agregar</button><button class="btn-cancel" onclick="cerrarPanel()">Cancelar</button></div>
+    <div class="msg-ok" id="msg-ok">✓ Agregado correctamente</div>
+  </div>
+</div>
+<script>
+const SECCIONES = {
+  directores: {
+    titulo: "Cine / Series",
+    subtitulo: "Directores, actores, personajes, soundtracks y más",
+    artistas: [
+      {n:"Michelangelo Antonioni",u:"https://www.tiendaoutsider.com.ar/search?q=Michelangelo+Antonioni"},
+      {n:"Darío Argento",u:"https://www.tiendaoutsider.com.ar/search?q=dario+argento"},
+      {n:"Luis Buñuel",u:"https://www.tiendaoutsider.com.ar/search?q=luis+bu%C3%B1uel"},
+      {n:"Marlon Brando",u:"https://www.tiendaoutsider.com.ar/search?q=Marlon+Brando"},
+      {n:"John Carpenter",u:"https://www.tiendaoutsider.com.ar/search?q=john+carpenter"},
+      {n:"Francis Ford Coppola",u:"https://www.tiendaoutsider.com.ar/search?q=coppola"},
+      {n:"George Costanza",u:"https://www.tiendaoutsider.com.ar/search?q=George+Costanza"},
+      {n:"David Cronenberg",u:"https://www.tiendaoutsider.com.ar/search?q=David+Cronenberg"},
+      {n:"Larry David",u:"https://www.tiendaoutsider.com.ar/search?q=Larry+David"},
+      {n:"Bette Davis",u:"https://www.tiendaoutsider.com.ar/search?q=Bette+Davis"},
+      {n:"Alex De La Iglesia",u:"https://www.tiendaoutsider.com.ar/search?q=Alex+De+La+Iglesia"},
+      {n:"Alain Delon",u:"https://www.tiendaoutsider.com.ar/search?q=Alain+Delon"},
+      {n:"Robert De Niro",u:"https://www.tiendaoutsider.com.ar/search?q=Robert+De+Niro"},
+      {n:"Brian De Palma",u:"https://www.tiendaoutsider.com.ar/search?q=Brian+De+Palma"},
+      {n:"Walt Disney",u:"https://www.tiendaoutsider.com.ar/search?q=walt+disney"},
+      {n:"Disney",u:"https://www.tiendaoutsider.com.ar/search?q=Disney"},
+      {n:"Clint Eastwood",u:"https://www.tiendaoutsider.com.ar/search?q=Clint+Eastwood"},
+      {n:"John Ford",u:"https://www.tiendaoutsider.com.ar/search?q=John+Ford"},
+      {n:"William Friedkin",u:"https://www.tiendaoutsider.com.ar/search?q=William+Friedkin"},
+      {n:"Jim Henson",u:"https://www.tiendaoutsider.com.ar/search?q=jim+henson"},
+      {n:"Audrey Hepburn",u:"https://www.tiendaoutsider.com.ar/search?q=Audrey+Hepburn"},
+      {n:"Don Hertzfeldt",u:"https://www.tiendaoutsider.com.ar/search?q=Don+Hertzfeldt"},
+      {n:"Werner Herzog",u:"https://www.tiendaoutsider.com.ar/search?q=Werner+Herzog"},
+      {n:"Stanley Kubrick",u:"https://www.tiendaoutsider.com.ar/search?q=Stanley+Kubrick"},
+      {n:"Akira Kurosawa",u:"https://www.tiendaoutsider.com.ar/search?q=Akira+Kurosawa"},
+      {n:"Fritz Lang",u:"https://www.tiendaoutsider.com.ar/search?q=Fritz+Lang"},
+      {n:"Sergio Leone",u:"https://www.tiendaoutsider.com.ar/search?q=Sergio+Leone"},
+      {n:"Sidney Lumet",u:"https://www.tiendaoutsider.com.ar/search?q=Sidney+Lumet"},
+      {n:"David Lynch",u:"https://www.tiendaoutsider.com.ar/search?q=David+Lynch"},
+      {n:"Joseph L. Mankiewicz",u:"https://www.tiendaoutsider.com.ar/search?q=Joseph+Mankiewicz"},
+      {n:"Jean Pierre Melville",u:"https://www.tiendaoutsider.com.ar/search?q=Jean+Pierre+Melville"},
+      {n:"Kenji Mizoguchi",u:"https://www.tiendaoutsider.com.ar/search?q=Kenji+Mizoguchi"},
+      {n:"Ennio Morricone",u:"https://www.tiendaoutsider.com.ar/search?q=Ennio+Morricone"},
+      {n:"Al Pacino",u:"https://www.tiendaoutsider.com.ar/search?q=Al+Pacino"},
+      {n:"Pixar",u:"https://www.tiendaoutsider.com.ar/search?q=pixar"},
+      {n:"Ryuichi Sakamoto",u:"https://www.tiendaoutsider.com.ar/search?q=Ryuichi+Sakamoto"},
+      {n:"Martin Scorsese",u:"https://www.tiendaoutsider.com.ar/search?q=Martin+Scorsese"},
+      {n:"Ridley Scott",u:"https://www.tiendaoutsider.com.ar/search?q=Ridley+Scott"},
+      {n:"Arnold Schwarzenegger",u:"https://www.tiendaoutsider.com.ar/search?q=Arnold+Schwarzenegger"},
+      {n:"Kaneto Shindo",u:"https://www.tiendaoutsider.com.ar/search?q=Kaneto+Shindo"},
+      {n:"Steven Spielberg",u:"https://www.tiendaoutsider.com.ar/search?q=Steven+Spielberg"},
+      {n:"Sylvester Stallone",u:"https://www.tiendaoutsider.com.ar/search?q=Sylvester+Stallone"},
+      {n:"Quentin Tarantino",u:"https://www.tiendaoutsider.com.ar/search?q=Quentin+Tarantino"},
+      {n:"Andreí Tarkovski",u:"https://www.tiendaoutsider.com.ar/search?q=andrei+tarkovski"},
+      {n:"Hiroshi Teshigahara",u:"https://www.tiendaoutsider.com.ar/search?q=Hiroshi+Teshigahara"},
+      {n:"Orson Welles",u:"https://www.tiendaoutsider.com.ar/search?q=Orson+Welles"},
+      {n:"Billy Wilder",u:"https://www.tiendaoutsider.com.ar/search?q=Billy+Wilder"},
+      {n:"Robert Zemeckis",u:"https://www.tiendaoutsider.com.ar/search?q=Robert+Zemeckis"},
+      {n:"Andrzej Zulawski",u:"https://www.tiendaoutsider.com.ar/search?q=Andrzej+Zulawski"}
+    ]
+  },
+  peliculas: {
+    titulo: null,
+    subtitulo: "Películas y Series",
+    artistas: [
+      {n:"2001: A Space Odyssey",u:"https://www.tiendaoutsider.com.ar/search?q=2001"},
+      {n:"A Clockwork Orange",u:"https://www.tiendaoutsider.com.ar/search?q=A+Clockwork+Orange"},
+      {n:"Aeon Flux (MTV)",u:"https://www.tiendaoutsider.com.ar/search?q=aeon+flux"},
+      {n:"ALF",u:"https://www.tiendaoutsider.com.ar/search?q=alf"},
+      {n:"Alice in Wonderland",u:"https://www.tiendaoutsider.com.ar/search?q=Alice+in+Wonderland"},
+      {n:"Apocalypse Now",u:"https://www.tiendaoutsider.com.ar/search?q=Apocalypse+Now"},
+      {n:"Batman",u:"https://www.tiendaoutsider.com.ar/search?q=Batman"},
+      {n:"Beavis and Butt-Head",u:"https://www.tiendaoutsider.com.ar/search?q=Beavis+Butt-Head"},
+      {n:"Belle de Jour",u:"https://www.tiendaoutsider.com.ar/search?q=Belle+de+Jour"},
+      {n:"Better Call Saul",u:"https://www.tiendaoutsider.com.ar/search?q=Better+Call+Saul"},
+      {n:"Big Lebowski",u:"https://www.tiendaoutsider.com.ar/search?q=Big+Lebowski"},
+      {n:"The Birds",u:"https://www.tiendaoutsider.com.ar/search?q=The+Birds"},
+      {n:"Blade Runner",u:"https://www.tiendaoutsider.com.ar/search?q=Blade+Runner"},
+      {n:"Blow Up",u:"https://www.tiendaoutsider.com.ar/search?q=blow+up"},
+      {n:"The Breakfast Club",u:"https://www.tiendaoutsider.com.ar/search?q=The+Breakfast+Club"},
+      {n:"Breaking Bad",u:"https://www.tiendaoutsider.com.ar/search?q=Breaking+Bad"},
+      {n:"El Bueno El Malo y El Feo",u:"https://www.tiendaoutsider.com.ar/search?q=El+Bueno+El+Malo+y+El+Feo"},
+      {n:"The Cabinet of Dr. Caligari",u:"https://www.tiendaoutsider.com.ar/search?q=caligari"},
+      {n:"Citizen Kane",u:"https://www.tiendaoutsider.com.ar/search?q=Citizen+Kane"},
+      {n:"Cobra Kai",u:"https://www.tiendaoutsider.com.ar/search?q=Cobra+Kai"},
+      {n:"The Crow",u:"https://www.tiendaoutsider.com.ar/search?q=the+crow"},
+      {n:"Curb Your Enthusiasm",u:"https://www.tiendaoutsider.com.ar/search?q=Curb+Your+Enthusiasm"},
+      {n:"Daria (MTV)",u:"https://www.tiendaoutsider.com.ar/search?q=Daria+"},
+      {n:"Dawson's Creek",u:"https://www.tiendaoutsider.com.ar/search?q=Dawson%27s+Creek"},
+      {n:"Depredador (Predator)",u:"https://www.tiendaoutsider.com.ar/search?q=Depredador"},
+      {n:"El Dia de La Bestia",u:"https://www.tiendaoutsider.com.ar/search?q=El+Dia+de+La+Bestia"},
+      {n:"Dog Day Afternoon",u:"https://www.tiendaoutsider.com.ar/search?q=Dog+Day+Afternoon"},
+      {n:"Don Gato y Su Pandilla",u:"https://www.tiendaoutsider.com.ar/search?q=top+cat"},
+      {n:"Double Indemnity",u:"https://www.tiendaoutsider.com.ar/search?q=Double+Indemnity"},
+      {n:"Dumbo",u:"https://www.tiendaoutsider.com.ar/search?q=dumbo"},
+      {n:"E.T.",u:"https://www.tiendaoutsider.com.ar/search?q=e.t"},
+      {n:"Eraserhead",u:"https://www.tiendaoutsider.com.ar/search?q=Eraserhead"},
+      {n:"The Exorcist",u:"https://www.tiendaoutsider.com.ar/search?q=The+Exorcist"},
+      {n:"Family Guy",u:"https://www.tiendaoutsider.com.ar/search?q=Family+Guy"},
+      {n:"Fantasia",u:"https://www.tiendaoutsider.com.ar/search?q=fantasia"},
+      {n:"Festival de Cine de Cannes",u:"https://www.tiendaoutsider.com.ar/search?q=Festival+de+Cine+de+Cannes"},
+      {n:"For a Few Dollars More",u:"https://www.tiendaoutsider.com.ar/search?q=For+a+Few+Dollars+More"},
+      {n:"Forrest Gump",u:"https://www.tiendaoutsider.com.ar/search?q=Forrest+Gump"},
+      {n:"Fraggle Rock",u:"https://www.tiendaoutsider.com.ar/search?q=Fraggle+Rock"},
+      {n:"Friday 13th / Viernes 13",u:"https://www.tiendaoutsider.com.ar/search?q=friday+the+13th"},
+      {n:"Friends",u:"https://www.tiendaoutsider.com.ar/search?q=Friends"},
+      {n:"Full Metal Jacket",u:"https://www.tiendaoutsider.com.ar/search?q=Full+Metal+Jacket"},
+      {n:"Ghost in The Shell",u:"https://www.tiendaoutsider.com.ar/search?q=Ghost+in+The+Shell"},
+      {n:"Ghostbusters",u:"https://www.tiendaoutsider.com.ar/search?q=cazafantasmas"},
+      {n:"The Godfather / El Padrino",u:"https://www.tiendaoutsider.com.ar/search?q=el+padrino"},
+      {n:"Goodfellas",u:"https://www.tiendaoutsider.com.ar/search?q=Goodfellas"},
+      {n:"Gran Torino",u:"https://www.tiendaoutsider.com.ar/search?q=Gran+Torino"},
+      {n:"The Grapes of Wrath",u:"https://www.tiendaoutsider.com.ar/search?q=The+Grapes+of+Wrath"},
+      {n:"Gremlins",u:"https://www.tiendaoutsider.com.ar/search?q=Gremlins"},
+      {n:"Halloween",u:"https://www.tiendaoutsider.com.ar/search?q=Halloween"},
+      {n:"Harry Potter",u:"https://www.tiendaoutsider.com.ar/search?q=Harry+Potter"},
+      {n:"La Historia Sin Fin",u:"https://www.tiendaoutsider.com.ar/search?q=the+neverending+story"},
+      {n:"House of Dragon",u:"https://www.tiendaoutsider.com.ar/search?q=House+of+Dragon"},
+      {n:"Jaws / Tiburón",u:"https://www.tiendaoutsider.com.ar/search?q=jaws"},
+      {n:"Kill Bill",u:"https://www.tiendaoutsider.com.ar/search?q=Kill+Bill"},
+      {n:"Kuroneko",u:"https://www.tiendaoutsider.com.ar/search?q=Kuroneko"},
+      {n:"Labyrinth",u:"https://www.tiendaoutsider.com.ar/search?q=labyrinth"},
+      {n:"The Lady From Shangai",u:"https://www.tiendaoutsider.com.ar/search?q=the+lady+from+shangai"},
+      {n:"Le Samourai",u:"https://www.tiendaoutsider.com.ar/search?q=le+samourai"},
+      {n:"Lilo y Stitch",u:"https://www.tiendaoutsider.com.ar/search?q=Lilo+y+Stitch"},
+      {n:"La Sirenita / Little Mermaid",u:"https://www.tiendaoutsider.com.ar/search?q=La+Sirenita"},
+      {n:"Los Autos Locos",u:"https://www.tiendaoutsider.com.ar/search?q=los+autos+locos"},
+      {n:"Lost Highway",u:"https://www.tiendaoutsider.com.ar/search?q=Lost+Highway"},
+      {n:"Marihuana: Weed with Roots in Hell",u:"https://www.tiendaoutsider.com.ar/search?q=Weed+with+Roots+in+Hell"},
+      {n:"Merry Christmas Mr. Lawrence",u:"https://www.tiendaoutsider.com.ar/search?q=Merry+Christmas+Mr.+Lawrence"},
+      {n:"Metropolis",u:"https://www.tiendaoutsider.com.ar/search?q=Metropolis"},
+      {n:"Miami Vice",u:"https://www.tiendaoutsider.com.ar/search?q=Miami+Vice"},
+      {n:"Mi Pobre Angelito (Home Alone)",u:"https://www.tiendaoutsider.com.ar/search?q=Mi+Pobre+Angelito"},
+      {n:"Monty Python",u:"https://www.tiendaoutsider.com.ar/search?q=Monty+Python"},
+      {n:"MTV",u:"https://www.tiendaoutsider.com.ar/search?q=mtv"},
+      {n:"Mulholland Drive",u:"https://www.tiendaoutsider.com.ar/search?q=Mulholland+Drive"},
+      {n:"The Muppet Show",u:"https://www.tiendaoutsider.com.ar/search?q=muppet"},
+      {n:"Nosferatu",u:"https://www.tiendaoutsider.com.ar/search?q=Nosferatu"},
+      {n:"The Office",u:"https://www.tiendaoutsider.com.ar/search?q=the+office"},
+      {n:"Once Upon a Time in Hollywood",u:"https://www.tiendaoutsider.com.ar/search?q=Once+Upon+a+Time+in+Hollywood"},
+      {n:"Los Ositos Cariñosos (Care Bears)",u:"https://www.tiendaoutsider.com.ar/search?q=ositos+cari%C3%B1osos"},
+      {n:"Pale Rider",u:"https://www.tiendaoutsider.com.ar/search?q=Pale+rider"},
+      {n:"Peaky Blinders",u:"https://www.tiendaoutsider.com.ar/search?q=Peaky+Blinders"},
+      {n:"Pingu",u:"https://www.tiendaoutsider.com.ar/search?q=Pingu"},
+      {n:"Los Pitufos",u:"https://www.tiendaoutsider.com.ar/search?q=Los+Pitufos"},
+      {n:"Popeye",u:"https://www.tiendaoutsider.com.ar/search?q=popeye"},
+      {n:"Possession",u:"https://www.tiendaoutsider.com.ar/cine-y-series/possession-andrzej-zulawski-1981"},
+      {n:"Psycho",u:"https://www.tiendaoutsider.com.ar/search?q=psycho"},
+      {n:"Pulp Fiction",u:"https://www.tiendaoutsider.com.ar/search?q=Pulp+Fiction"},
+      {n:"Raging Bull",u:"https://www.tiendaoutsider.com.ar/search?q=Raging+Bull"},
+      {n:"Rambo",u:"https://www.tiendaoutsider.com.ar/search?q=rambo"},
+      {n:"Re-Animator",u:"https://www.tiendaoutsider.com.ar/search?q=Re+animator"},
+      {n:"Rejected",u:"https://www.tiendaoutsider.com.ar/search?q=Rejected"},
+      {n:"Ren And Stimpy",u:"https://www.tiendaoutsider.com.ar/search?q=Ren+And+Stimpy"},
+      {n:"Reservoir Dogs",u:"https://www.tiendaoutsider.com.ar/search?q=Reservoir+Dogs"},
+      {n:"Rick and Morty",u:"https://www.tiendaoutsider.com.ar/search?q=Rick+and+Morty"},
+      {n:"Rocky",u:"https://www.tiendaoutsider.com.ar/search?q=rocky"},
+      {n:"Rugrats",u:"https://www.tiendaoutsider.com.ar/search?q=Rugrats"},
+      {n:"Sansho",u:"https://www.tiendaoutsider.com.ar/search?q=sansho"},
+      {n:"Scanners",u:"https://www.tiendaoutsider.com.ar/search?q=Scanners"},
+      {n:"Scarface",u:"https://www.tiendaoutsider.com.ar/search?q=Scarface"},
+      {n:"Seinfeld",u:"https://www.tiendaoutsider.com.ar/search?q=seinfeld"},
+      {n:"Sesame Street",u:"https://www.tiendaoutsider.com.ar/search?q=Sesame+Street"},
+      {n:"The Shining",u:"https://www.tiendaoutsider.com.ar/search?q=the+shining"},
+      {n:"The Simpsons",u:"https://www.tiendaoutsider.com.ar/search?q=The+Simpsons"},
+      {n:"Solaris",u:"https://www.tiendaoutsider.com.ar/search?q=solaris"},
+      {n:"South Park",u:"https://www.tiendaoutsider.com.ar/search?q=south+park"},
+      {n:"Stalker",u:"https://www.tiendaoutsider.com.ar/search?q=Stalker"},
+      {n:"Star Wars",u:"https://www.tiendaoutsider.com.ar/search?q=star+wars"},
+      {n:"Stranger Things",u:"https://www.tiendaoutsider.com.ar/search?q=Stranger+Things"},
+      {n:"Sunset Boulevard",u:"https://www.tiendaoutsider.com.ar/search?q=sunset+Boulevard"},
+      {n:"Suspiria",u:"https://www.tiendaoutsider.com.ar/search?q=Suspiria"},
+      {n:"Taxi Driver",u:"https://www.tiendaoutsider.com.ar/search?q=Taxi+Driver"},
+      {n:"Terminator",u:"https://www.tiendaoutsider.com.ar/search?q=terminator"},
+      {n:"The Deer Hunter",u:"https://www.tiendaoutsider.com.ar/search?q=the+deer+hunter"},
+      {n:"Tommy",u:"https://www.tiendaoutsider.com.ar/cine/tommy-the-movie-the-who"},
+      {n:"Las Tortugas Ninja",u:"https://www.tiendaoutsider.com.ar/search?q=Tortugas+Ninja"},
+      {n:"True Romance",u:"https://www.tiendaoutsider.com.ar/search?q=True+Romance"},
+      {n:"Twin Peaks",u:"https://www.tiendaoutsider.com.ar/search?q=twin+peaks"},
+      {n:"Un Perro Andaluz",u:"https://www.tiendaoutsider.com.ar/search?q=Un+perro+andaluz"},
+      {n:"Vertigo",u:"https://www.tiendaoutsider.com.ar/search?q=vertigo"},
+      {n:"Wallace and Gromit",u:"https://www.tiendaoutsider.com.ar/search?q=Wallace+and+Gromit"},
+      {n:"Wall E",u:"https://www.tiendaoutsider.com.ar/search?q=Wall+E"},
+      {n:"What Ever Happened To Baby Jane",u:"https://www.tiendaoutsider.com.ar/search?q=What+Ever+Happened+To+Baby+Jane"},
+      {n:"Wild At Heart",u:"https://www.tiendaoutsider.com.ar/cine-y-series/david-lynch-wild-at-heart"},
+      {n:"The Wizard Of Oz",u:"https://www.tiendaoutsider.com.ar/search?q=The+Wizard+Of+Oz"},
+      {n:"Woman in The Dunes",u:"https://www.tiendaoutsider.com.ar/search?q=Woman+in+The+Dunes"}
+    ]
+  },
+  libros: {
+    titulo: "Literatura",
+    subtitulo: "Libros y ensayos",
+    artistas: [
+      {n:"Brave New World / Un Mundo Feliz",u:"https://www.tiendaoutsider.com.ar/search?q=Brave+New+World"},
+      {n:"El Cuervo (Edgar Allan Poe)",u:"https://www.tiendaoutsider.com.ar/search?q=Edgar+allan+poe+-+El+Cuervo"},
+      {n:"Dracula",u:"https://www.tiendaoutsider.com.ar/search?q=Dracula"},
+      {n:"Fahrenheit 451",u:"https://www.tiendaoutsider.com.ar/search?q=Fahrenheit+451"},
+      {n:"Las Puertas de la Percepción",u:"https://www.tiendaoutsider.com.ar/search?q=The+Doors+of+Perception"},
+      {n:"Steppenwolff / El Lobo Estepario",u:"https://www.tiendaoutsider.com.ar/search?q=el+lobo+estepario"}
+    ]
+  },
+  autores: {
+    titulo: null,
+    subtitulo: "Autores, personajes y más",
+    artistas: [
+      {n:"Simone de Beauvoir",u:"https://www.tiendaoutsider.com.ar/search?q=Simone+de+Beauvoir"},
+      {n:"William Blake",u:"https://www.tiendaoutsider.com.ar/search?q=William+Blake"},
+      {n:"Ray Bradbury",u:"https://www.tiendaoutsider.com.ar/search?q=ray+bradbury"},
+      {n:"Julio Cortázar",u:"https://www.tiendaoutsider.com.ar/search?q=Julio+Cort%C3%A1zar"},
+      {n:"Hermann Hesse",u:"https://www.tiendaoutsider.com.ar/search?q=Hermann+Hesse"},
+      {n:"Aldous Huxley",u:"https://www.tiendaoutsider.com.ar/search?q=Aldous+Huxley"},
+      {n:"H.P. Lovecraft",u:"https://www.tiendaoutsider.com.ar/search?q=H.P.+Lovecraft"},
+      {n:"Nietzsche",u:"https://www.tiendaoutsider.com.ar/search?q=Nietzsche"},
+      {n:"Edgar Allan Poe",u:"https://www.tiendaoutsider.com.ar/search?q=Edgar+Allan+Poe"},
+      {n:"Arthur Rimbaud",u:"https://www.tiendaoutsider.com.ar/search?q=Arthur+Rimbaud"},
+      {n:"Carl Sagan",u:"https://www.tiendaoutsider.com.ar/search?q=Carl+Sagan"},
+      {n:"William Shakespeare",u:"https://www.tiendaoutsider.com.ar/search?q=William+Shakespeare"},
+      {n:"Bram Stoker",u:"https://www.tiendaoutsider.com.ar/search?q=Bram+Stoker"},
+      {n:"Oscar Wilde",u:"https://www.tiendaoutsider.com.ar/search?q=Oscar+Wilde"}
+    ]
+  }
+};
+
+const ORDEN = ['directores','peliculas','libros','autores'];
+let modoEliminar = false;
+
+function sortKey(n){ return n.replace(/^(The |Los |Las |El |La )/i,'').toLowerCase(); }
+
+function renderSeccion(key){
+  const sec = SECCIONES[key];
+  const arr = [...sec.artistas].sort((a,b) => sortKey(a.n).localeCompare(sortKey(b.n),'es'));
+  const grupos = {};
+  arr.forEach(a => {
+    const l = sortKey(a.n)[0].toUpperCase();
+    if(!grupos[l]) grupos[l] = [];
+    grupos[l].push(a);
+  });
+  return Object.keys(grupos).sort().map(l => {
+    const links = grupos[l].map(a => {
+      const cls = modoEliminar ? ' class="del-mode"' : '';
+      const oc = modoEliminar ? ` onclick="eliminar('${key}','${a.n.replace(/'/g,"\\'")}');return false;"` : '';
+      return `<a href="${a.u}"${cls}${oc} target="_blank">${a.n}</a>`;
+    }).join(' · ');
+    return `<h2>${l}</h2><p class="artistas-line">${links}</p>`;
+  }).join('');
+}
+
+function render(){
+  let html = '';
+  ORDEN.forEach((key, i) => {
+    const sec = SECCIONES[key];
+    // Separador extra antes de Películas y antes de Literatura
+    const extraMargin = (key === 'peliculas' || (sec.titulo && i > 0)) ? ' style="margin-top:64px"' : '';
+    if(sec.titulo) html += `<div class="seccion-titulo"${i > 0 ? ' style="margin-top:64px"' : ''}>${sec.titulo}</div>`;
+    html += `<div class="subseccion-titulo"${key === 'peliculas' ? ' style="margin-top:48px"' : ''}>${sec.subtitulo}</div>`;
+    html += renderSeccion(key);
+  });
+  document.getElementById('indice').innerHTML = html;
+}
+
+function abrirPanel(){ document.getElementById('panel').classList.add('open'); document.getElementById('inp-nombre').focus(); document.getElementById('msg-ok').style.display='none'; }
+function cerrarPanel(){ document.getElementById('panel').classList.remove('open'); document.getElementById('inp-nombre').value=''; document.getElementById('inp-url').value=''; }
+
+document.getElementById('inp-nombre').addEventListener('input', function(){
+  const q = this.value.trim().replace(/ /g,'+');
+  document.getElementById('inp-url').value = q ? 'https://www.tiendaoutsider.com.ar/search?q='+q : '';
+});
+
+function agregarArtista(){
+  const nombre = document.getElementById('inp-nombre').value.trim();
+  const url = document.getElementById('inp-url').value.trim();
+  const key = document.getElementById('inp-seccion').value;
+  if(!nombre){ alert('Ingresá el nombre'); return; }
+  if(!url){ alert('Ingresá la URL'); return; }
+  if(SECCIONES[key].artistas.find(a => a.n.toLowerCase() === nombre.toLowerCase())){ alert('Ya está en esa sección'); return; }
+  SECCIONES[key].artistas.push({n:nombre, u:url});
+  render();
+  document.getElementById('msg-ok').style.display='block';
+  document.getElementById('inp-nombre').value='';
+  document.getElementById('inp-url').value='';
+  document.getElementById('inp-nombre').focus();
+}
+
+function toggleDeleteMode(){
+  modoEliminar = !modoEliminar;
+  const btn = document.getElementById('btn-delete');
+  btn.textContent = modoEliminar ? '✓ Salir' : '🗑 Eliminar';
+  btn.classList.toggle('active', modoEliminar);
+  render();
+}
+
+function eliminar(key, nombre){
+  if(!confirm('¿Eliminar "'+nombre+'"?')) return;
+  const arr = SECCIONES[key].artistas;
+  arr.splice(arr.findIndex(a=>a.n===nombre), 1);
+  render();
+}
+
+function descargarHTML(){
+  const blob = new Blob([document.documentElement.outerHTML], {type:'text/html;charset=utf-8'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'cine-literatura.html';
+  a.click();
+}
+
+document.addEventListener('keydown', e => { if(e.key==='Escape') cerrarPanel(); });
+document.getElementById('panel').addEventListener('click', e => { if(e.target===document.getElementById('panel')) cerrarPanel(); });
+
+render();
+</script>
+<script>
+// Admin mode
+(function(){
+  var PASS = 'Gordos1234';
+  var adminMode = false;
+  function activarAdmin(){
+    var p = prompt('Contraseña:');
+    if(p === PASS){
+      adminMode = true;
+      document.getElementById('btn-editar').classList.add('admin-visible');
+      document.getElementById('btn-descargar').classList.add('admin-visible');
+      document.getElementById('btn-delete').classList.add('admin-visible');
+    }
+  }
+  document.addEventListener('DOMContentLoaded', function(){
+    var titulo = document.querySelector('.page-title h1');
+    if(titulo){ titulo.addEventListener('dblclick', activarAdmin); }
+  });
+})();
+</script>
+</body>
+</html>
