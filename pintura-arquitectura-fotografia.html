@@ -48,6 +48,9 @@ footer { background: #f8f8f8; border-top: 1px solid #e0e0e0; padding: 22px 32px;
 footer a { color: #888; text-decoration: none; margin: 0 10px; }
 footer a:hover { color: #333; }
 @media(max-width:600px){ header, .page-title, main { padding-left: 16px; padding-right: 16px; } #btn-delete { right: 130px; } }
+
+#btn-editar, #btn-descargar, #btn-delete { display: none !important; }
+#btn-editar.admin-visible, #btn-descargar.admin-visible, #btn-delete.admin-visible { display: block !important; }
 </style>
 </head>
 <body>
@@ -232,6 +235,26 @@ document.addEventListener('keydown', e => { if(e.key==='Escape') cerrarPanel(); 
 document.getElementById('panel').addEventListener('click', e => { if(e.target===document.getElementById('panel')) cerrarPanel(); });
 
 render();
+</script>
+<script>
+// Admin mode
+(function(){
+  var PASS = 'Gordos1234';
+  var adminMode = false;
+  function activarAdmin(){
+    var p = prompt('Contraseña:');
+    if(p === PASS){
+      adminMode = true;
+      document.getElementById('btn-editar').classList.add('admin-visible');
+      document.getElementById('btn-descargar').classList.add('admin-visible');
+      document.getElementById('btn-delete').classList.add('admin-visible');
+    }
+  }
+  document.addEventListener('DOMContentLoaded', function(){
+    var titulo = document.querySelector('.page-title h1');
+    if(titulo){ titulo.addEventListener('dblclick', activarAdmin); }
+  });
+})();
 </script>
 </body>
 </html>

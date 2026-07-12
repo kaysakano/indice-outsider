@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Random · Comics · Manga Anime – Tienda Outsider</title>
+<title>Electrónica · Experimental · Ambient · Rap / Hip Hop – Tienda Outsider</title>
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body { background: #fff; color: #444; font-family: Arial, Helvetica, sans-serif; font-size: 15px; line-height: 1.6; }
@@ -54,149 +54,158 @@ footer a:hover { color: #333; }
 </style>
 </head>
 <body>
-
 <header>
   <a href="https://www.tiendaoutsider.com.ar"><img src="https://d22fxaf9t8d39k.cloudfront.net/830d3c7e016dad08c5d77f3ef1d8e2c0ac0f65a15dc7cd18c3b3f15be4c6aecf67088.png" alt="Tienda Outsider"></a>
   <a class="back" href="https://www.tiendaoutsider.com.ar">← Volver a la tienda</a>
 </header>
-
 <div class="page-title">
-  <h1>Random · Comics · Manga Anime – Índice</h1>
-  <p>Hacé click en cualquier nombre para ver sus productos</p>
+  <h1>Electrónica · Experimental · Ambient · Rap / Hip Hop – Índice de Artistas</h1>
+  <p>Hacé click en cualquier artista para ver sus productos</p>
 </div>
-
 <main id="indice"></main>
-
 <footer>
   <a href="https://www.tiendaoutsider.com.ar">tiendaoutsider.com.ar</a>
-  <a href="https://www.tiendaoutsider.com.ar/random">Random</a>
-  <a href="https://www.tiendaoutsider.com.ar/comics">Comics</a>
-  <a href="https://www.tiendaoutsider.com.ar/anime-manga">Anime · Manga</a>
   <a href="https://instagram.com/tienda_outsider" target="_blank">@tienda_outsider</a>
 </footer>
-
 <button id="btn-delete" onclick="toggleDeleteMode()">🗑 Eliminar</button>
 <button id="btn-descargar" onclick="descargarHTML()">⬇ Descargar actualizado</button>
 <button id="btn-editar" onclick="abrirPanel()">+ Agregar</button>
-
 <div id="panel">
   <div id="panel-inner">
-    <h3>Agregar entrada</h3>
+    <h3>Agregar artista</h3>
     <div class="field-group">
       <label>Sección</label>
       <select id="inp-seccion">
-        <option value="random">Random</option>
-        <option value="comics">Comics</option>
-        <option value="manga">Manga Anime</option>
+        <option value="electronica">Electrónica</option>
+        <option value="experimental">Experimental</option>
+        <option value="ambient">Ambient</option>
+        <option value="rap">Rap / Hip Hop</option>
       </select>
     </div>
-    <div class="field-group"><label>Nombre</label><input type="text" id="inp-nombre" placeholder="Ej: Atari"></div>
+    <div class="field-group"><label>Nombre</label><input type="text" id="inp-nombre" placeholder="Ej: Daft Punk"></div>
     <div class="field-group"><label>URL</label><input type="text" id="inp-url" placeholder="Se genera automáticamente"><div class="panel-hint">Podés editarla si querés apuntar a una página específica</div></div>
     <div class="panel-btns"><button class="btn-add" onclick="agregarArtista()">Agregar</button><button class="btn-cancel" onclick="cerrarPanel()">Cancelar</button></div>
     <div class="msg-ok" id="msg-ok">✓ Agregado correctamente</div>
   </div>
 </div>
-
 <script>
 const SECCIONES = {
-  random: {
-    titulo: "Random",
+  electronica: {
+    titulo: "Electrónica",
     artistas: [
-      {n:"1942 Video Juego",u:"https://www.tiendaoutsider.com.ar/search?q=1942"},
-      {n:"7 Eleven Convenience Stores",u:"https://www.tiendaoutsider.com.ar/search?q=7+Eleven"},
-      {n:"Akita Inu Perro",u:"https://www.tiendaoutsider.com.ar/search?q=akita"},
-      {n:"Atari",u:"https://www.tiendaoutsider.com.ar/search?q=Atari"},
-      {n:"Avax Avalanche (Cryptomoneda)",u:"https://www.tiendaoutsider.com.ar/search?q=avax"},
-      {n:"Barney",u:"https://www.tiendaoutsider.com.ar/search?q=Barney"},
-      {n:"Cambio Climático",u:"https://www.tiendaoutsider.com.ar/search?q=Cambio+Clim%C3%A1tico"},
-      {n:"Cannabis",u:"https://www.tiendaoutsider.com.ar/search?q=Cannabis"},
-      {n:"Cardano (Cryptomoneda)",u:"https://www.tiendaoutsider.com.ar/search?q=Cardano"},
-      {n:"Cherry Coke",u:"https://www.tiendaoutsider.com.ar/search?q=Cherry+Coke"},
-      {n:"Cherry 7UP",u:"https://www.tiendaoutsider.com.ar/search?q=Cherry+7UP"},
-      {n:"Cognac Monnet",u:"https://www.tiendaoutsider.com.ar/search?q=cognac+monnet"},
-      {n:"Comic Sans",u:"https://www.tiendaoutsider.com.ar/search?q=comic+sans"},
-      {n:"Commodore 64",u:"https://www.tiendaoutsider.com.ar/search?q=Commodore+64"},
-      {n:"Ethereum (Cryptomoneda)",u:"https://www.tiendaoutsider.com.ar/search?q=Ethereum"},
-      {n:"Fraggle Rock",u:"https://www.tiendaoutsider.com.ar/search?q=Fraggle+Rock"},
-      {n:"Futbol",u:"https://www.tiendaoutsider.com.ar/search?q=Futbol"},
-      {n:"Gatos. Gatitos",u:"https://www.tiendaoutsider.com.ar/search?q=gatito"},
-      {n:"Gold's Gym",u:"https://www.tiendaoutsider.com.ar/search?q=gym"},
-      {n:"Govern Your Soul!",u:"https://www.tiendaoutsider.com.ar/search?q=Govern+Your+Soul!"},
-      {n:"GTA Grand Theft Auto",u:"https://www.tiendaoutsider.com.ar/search?q=gta"},
-      {n:"Hachiko The Akita Dog",u:"https://www.tiendaoutsider.com.ar/search?q=hachiko"},
-      {n:"Hans and Botho von Romer",u:"https://www.tiendaoutsider.com.ar/search?q=Hans+and+Botho+von+Romer"},
-      {n:"Hello Kitty",u:"https://www.tiendaoutsider.com.ar/search?q=Hello+Kitty"},
-      {n:"Helvetica Fuente",u:"https://www.tiendaoutsider.com.ar/search?q=Helvetica"},
-      {n:"Instagram",u:"https://www.tiendaoutsider.com.ar/search?q=Instagram"},
-      {n:"Lilo y Stitch",u:"https://www.tiendaoutsider.com.ar/search?q=Lilo+y+Stitch"},
-      {n:"Los Autos Locos",u:"https://www.tiendaoutsider.com.ar/search?q=los+autos+locos"},
-      {n:"Ludwig Hohlwein",u:"https://www.tiendaoutsider.com.ar/search?q=Ludwig+Hohlwein"},
-      {n:"Marantz Audio",u:"https://www.tiendaoutsider.com.ar/search?q=marantz"},
-      {n:"Marco Polo Tee",u:"https://www.tiendaoutsider.com.ar/search?q=Marco+Polo+Tee"},
-      {n:"Mc Donalds",u:"https://www.tiendaoutsider.com.ar/search?q=Mc+Donalds"},
-      {n:"Milli Vanilli",u:"https://www.tiendaoutsider.com.ar/search?q=Milli+Vanilli"},
-      {n:"Napster",u:"https://www.tiendaoutsider.com.ar/search?q=Napster"},
-      {n:"Nebulosa de Orión",u:"https://www.tiendaoutsider.com.ar/search?q=nebulosa+de+ori%C3%B3n"},
-      {n:"Nian Hua Chinos",u:"https://www.tiendaoutsider.com.ar/search?q=nian+hua"},
-      {n:"Only Farts",u:"https://www.tiendaoutsider.com.ar/search?q=Only+Farts"},
-      {n:"Osos Ositos",u:"https://www.tiendaoutsider.com.ar/search?q=Osos"},
-      {n:"Peanuts (Snoopy)",u:"https://www.tiendaoutsider.com.ar/search?q=Snoopy"},
-      {n:"Perros",u:"https://www.tiendaoutsider.com.ar/search?q=perrito"},
-      {n:"Plancton (Colección Nerd)",u:"https://www.tiendaoutsider.com.ar/search?q=nerd"},
-      {n:"Play-Doh Juguetes Retro",u:"https://www.tiendaoutsider.com.ar/search?q=Play-Doh"},
-      {n:"Pokemon",u:"https://www.tiendaoutsider.com.ar/search?q=Pokemon"},
-      {n:"Polkadot (Cryptomoneda)",u:"https://www.tiendaoutsider.com.ar/search?q=Polkadot"},
-      {n:"Ramen",u:"https://www.tiendaoutsider.com.ar/search?q=ramen."},
-      {n:"Ren And Stimpy",u:"https://www.tiendaoutsider.com.ar/search?q=Ren+And+Stimpy"},
-      {n:"René Gruau",u:"https://www.tiendaoutsider.com.ar/search?q=rene+gruau"},
-      {n:"San Expedito",u:"https://www.tiendaoutsider.com.ar/search?q=San+Expedito"},
-      {n:"San Miguel Arcangel",u:"https://www.tiendaoutsider.com.ar/search?q=San+Miguel+Arcangel"},
-      {n:"Sega",u:"https://www.tiendaoutsider.com.ar/search?q=Sega"},
-      {n:"Sesame Street",u:"https://www.tiendaoutsider.com.ar/search?q=Sesame+Street"},
-      {n:"Shiba Inu (Cryptomoneda)",u:"https://www.tiendaoutsider.com.ar/search?q=Shiba+Inu"},
-      {n:"Solana (Cryptomoneda)",u:"https://www.tiendaoutsider.com.ar/search?q=Solana"},
-      {n:"Space Invaders",u:"https://www.tiendaoutsider.com.ar/search?q=Space+Invaders"},
-      {n:"Sriracha Salsa",u:"https://www.tiendaoutsider.com.ar/search?q=sriracha"},
-      {n:"Street Fighter",u:"https://www.tiendaoutsider.com.ar/search?q=Street+Fighter"},
-      {n:"Sumo Nagoya 1983",u:"https://www.tiendaoutsider.com.ar/search?q=sumo"},
-      {n:"Triumph Motorcycle",u:"https://www.tiendaoutsider.com.ar/search?q=triumph+motorcycle"},
-      {n:"Video Juego",u:"https://www.tiendaoutsider.com.ar/search?q=Video+Juego"},
-      {n:"Winamp",u:"https://www.tiendaoutsider.com.ar/search?q=Winamp"}
+      {n:"Air",u:"https://www.tiendaoutsider.com.ar/search?q=Air"},
+      {n:"Aphex Twin",u:"https://www.tiendaoutsider.com.ar/search?q=Aphex+twin"},
+      {n:"Astrix (Avi Shmailov)",u:"https://www.tiendaoutsider.com.ar/search?q=astrix"},
+      {n:"Björk",u:"https://www.tiendaoutsider.com.ar/search?q=bjork"},
+      {n:"Boards Of Canada",u:"https://www.tiendaoutsider.com.ar/search?q=Boards+of+canada"},
+      {n:"Boys Noize",u:"https://www.tiendaoutsider.com.ar/search?q=boys+noize"},
+      {n:"Brian Eno",u:"https://www.tiendaoutsider.com.ar/search?q=brian+eno"},
+      {n:"Burial",u:"https://www.tiendaoutsider.com.ar/search?q=Burial"},
+      {n:"Cabaret Voltaire",u:"https://www.tiendaoutsider.com.ar/search?q=Cabaret+Voltaire"},
+      {n:"The Chemical Brothers",u:"https://www.tiendaoutsider.com.ar/search?q=the+chemical+brothers"},
+      {n:"Daft Punk",u:"https://www.tiendaoutsider.com.ar/search?q=daft+punk"},
+      {n:"Depeche Mode",u:"https://www.tiendaoutsider.com.ar/search?q=depeche+mode"},
+      {n:"Fatboy Slim",u:"https://www.tiendaoutsider.com.ar/search?q=Fatboy+Slim"},
+      {n:"Fripp & Eno",u:"https://www.tiendaoutsider.com.ar/search?q=fripp+and+eno"},
+      {n:"The Future Sound of London",u:"https://www.tiendaoutsider.com.ar/search?q=the+future+sound+of+london"},
+      {n:"Giorgio Moroder",u:"https://www.tiendaoutsider.com.ar/search?q=Giorgio+Moroder"},
+      {n:"Gorillaz",u:"https://www.tiendaoutsider.com.ar/search?q=gorillaz"},
+      {n:"Jean Michel Jarre",u:"https://www.tiendaoutsider.com.ar/search?q=Jean+Michel+Jarre"},
+      {n:"Kraftwerk",u:"https://www.tiendaoutsider.com.ar/search?q=Kraftwerk"},
+      {n:"LCD Soundsystem",u:"https://www.tiendaoutsider.com.ar/search?q=LCD+Soundsystem"},
+      {n:"Lustmord",u:"https://www.tiendaoutsider.com.ar/search?q=Lustmord"},
+      {n:"Massive Attack",u:"https://www.tiendaoutsider.com.ar/search?q=Massive+attack"},
+      {n:"Moby",u:"https://www.tiendaoutsider.com.ar/search?q=Moby"},
+      {n:"Moderat",u:"https://www.tiendaoutsider.com.ar/search?q=Moderat"},
+      {n:"Modeselektor",u:"https://www.tiendaoutsider.com.ar/search?q=modeselektor"},
+      {n:"Moog",u:"https://www.tiendaoutsider.com.ar/search?q=Moog"},
+      {n:"Morcheeba",u:"https://www.tiendaoutsider.com.ar/search?q=Morcheeba"},
+      {n:"Nine Inch Nails",u:"https://www.tiendaoutsider.com.ar/search?q=nine+inch+nails"},
+      {n:"Pet Shop Boys",u:"https://www.tiendaoutsider.com.ar/search?q=pet+shop+boys"},
+      {n:"Plantasia",u:"https://www.tiendaoutsider.com.ar/search?q=Plantasia"},
+      {n:"The Prodigy",u:"https://www.tiendaoutsider.com.ar/search?q=the+prodigy"},
+      {n:"Richie Hawtin (Plastikman)",u:"https://www.tiendaoutsider.com.ar/search?q=Richie+Hawtin"},
+      {n:"Roland Equipos",u:"https://www.tiendaoutsider.com.ar/search?q=Roland"},
+      {n:"Ryuichi Sakamoto",u:"https://www.tiendaoutsider.com.ar/search?q=Ryuichi+Sakamoto"},
+      {n:"Stereolab",u:"https://www.tiendaoutsider.com.ar/search?q=Stereolab"},
+      {n:"Thom Yorke",u:"https://www.tiendaoutsider.com.ar/search?q=Thom+Yorke"},
+      {n:"Twenty One Pilots",u:"https://www.tiendaoutsider.com.ar/search?q=twenty+one+pilots"},
+      {n:"Tycho",u:"https://www.tiendaoutsider.com.ar/search?q=Tycho"},
+      {n:"Ulver",u:"https://www.tiendaoutsider.com.ar/search?q=Ulver"},
+      {n:"The Weeknd",u:"https://www.tiendaoutsider.com.ar/search?q=the+weeknd"},
+      {n:"Zero 7",u:"https://www.tiendaoutsider.com.ar/search?q=Zero+7"}
     ]
   },
-  comics: {
-    titulo: "Comics",
+  experimental: {
+    titulo: "Experimental",
     artistas: [
-      {n:"Alberto Breccia",u:"https://www.tiendaoutsider.com.ar/search?q=Alberto+Breccia"},
-      {n:"Robert Crumb",u:"https://www.tiendaoutsider.com.ar/search?q=Robert+crumb"},
-      {n:"Mort Cinder",u:"https://www.tiendaoutsider.com.ar/search?q=Mort+Cinder"},
-      {n:"Peanuts (Snoopy)",u:"https://www.tiendaoutsider.com.ar/search?q=Snoopy"},
-      {n:"Pokemon",u:"https://www.tiendaoutsider.com.ar/search?q=Pokemon"},
-      {n:"Popeye",u:"https://www.tiendaoutsider.com.ar/search?q=popeye"},
-      {n:"Vampirella",u:"https://www.tiendaoutsider.com.ar/search?q=Vampirella"}
+      {n:"Aphex Twin",u:"https://www.tiendaoutsider.com.ar/search?q=Aphex+twin"},
+      {n:"Björk",u:"https://www.tiendaoutsider.com.ar/search?q=bjork"},
+      {n:"Brian Eno",u:"https://www.tiendaoutsider.com.ar/search?q=brian+eno"},
+      {n:"Cabaret Voltaire",u:"https://www.tiendaoutsider.com.ar/search?q=Cabaret+Voltaire"},
+      {n:"Frank Zappa",u:"https://www.tiendaoutsider.com.ar/search?q=Frank+Zappa"},
+      {n:"Fripp & Eno",u:"https://www.tiendaoutsider.com.ar/search?q=fripp+and+eno"},
+      {n:"Hermeto Pascoal",u:"https://www.tiendaoutsider.com.ar/search?q=Hermeto+Pascoal"},
+      {n:"Lustmord",u:"https://www.tiendaoutsider.com.ar/search?q=Lustmord"},
+      {n:"Miles Davis",u:"https://www.tiendaoutsider.com.ar/search?q=Miles+Davis"},
+      {n:"Mr. Bungle",u:"https://www.tiendaoutsider.com.ar/search?q=bungle"},
+      {n:"Ryuichi Sakamoto",u:"https://www.tiendaoutsider.com.ar/search?q=Ryuichi+Sakamoto"},
+      {n:"Sun Ra",u:"https://www.tiendaoutsider.com.ar/search?q=Sun+Ra"},
+      {n:"Sunn O)))",u:"https://www.tiendaoutsider.com.ar/search?q=sunn+o"},
+      {n:"Ulver",u:"https://www.tiendaoutsider.com.ar/search?q=Ulver"},
+      {n:"Weather Report",u:"https://www.tiendaoutsider.com.ar/search?q=Weather+Report"}
     ]
   },
-  manga: {
-    titulo: "Manga Anime",
+  ambient: {
+    titulo: "Ambient",
     artistas: [
-      {n:"Attack on Titan - Shingeki No Kyojin",u:"https://www.tiendaoutsider.com.ar/search?q=Attack+on+Titan"},
-      {n:"Death Note",u:"https://www.tiendaoutsider.com.ar/search?q=Death+Note"},
-      {n:"Demon Slayer - Kimetsu no Yaiba",u:"https://www.tiendaoutsider.com.ar/search?q=demon+slayer"},
-      {n:"Ghost in The Shell",u:"https://www.tiendaoutsider.com.ar/search?q=Ghost+in+The+Shell"},
-      {n:"Jujutsu Kaisen",u:"https://www.tiendaoutsider.com.ar/search?q=Jujutsu+Kaisen"},
-      {n:"Pokemon",u:"https://www.tiendaoutsider.com.ar/search?q=Pokemon"},
-      {n:"Shin Chan",u:"https://www.tiendaoutsider.com.ar/search?q=Shin+Chan"}
+      {n:"Brian Eno",u:"https://www.tiendaoutsider.com.ar/search?q=brian+eno"},
+      {n:"Dead Can Dance",u:"https://www.tiendaoutsider.com.ar/search?q=Dead+Can+Dance"},
+      {n:"The Future Sound of London",u:"https://www.tiendaoutsider.com.ar/search?q=the+future+sound+of+london"},
+      {n:"Lustmord",u:"https://www.tiendaoutsider.com.ar/search?q=Lustmord"},
+      {n:"Nine Inch Nails",u:"https://www.tiendaoutsider.com.ar/search?q=nine+inch+nails"},
+      {n:"Ryuichi Sakamoto",u:"https://www.tiendaoutsider.com.ar/search?q=Ryuichi+Sakamoto"},
+      {n:"Ulver",u:"https://www.tiendaoutsider.com.ar/search?q=Ulver"},
+      {n:"Wardruna",u:"https://www.tiendaoutsider.com.ar/search?q=Wardruna"}
+    ]
+  },
+  rap: {
+    titulo: "Rap / Hip Hop",
+    artistas: [
+      {n:"2Pac",u:"https://www.tiendaoutsider.com.ar/search?q=2pac"},
+      {n:"A Tribe Called Quest",u:"https://www.tiendaoutsider.com.ar/search?q=A+Tribe+Called+Quest"},
+      {n:"Beastie Boys",u:"https://www.tiendaoutsider.com.ar/search?q=Beastie+Boys"},
+      {n:"Biggie (The Notorious B.I.G.)",u:"https://www.tiendaoutsider.com.ar/search?q=Biggie"},
+      {n:"Canserbero",u:"https://www.tiendaoutsider.com.ar/search?q=Canserbero"},
+      {n:"Coolio",u:"https://www.tiendaoutsider.com.ar/search?q=coolio"},
+      {n:"Cypress Hill",u:"https://www.tiendaoutsider.com.ar/search?q=Cypress+Hill"},
+      {n:"Death Grips",u:"https://www.tiendaoutsider.com.ar/search?q=Death+Grips"},
+      {n:"Def Jam Recordings",u:"https://www.tiendaoutsider.com.ar/search?q=def+jam"},
+      {n:"Drake",u:"https://www.tiendaoutsider.com.ar/search?q=drake"},
+      {n:"Dr. Dre",u:"https://www.tiendaoutsider.com.ar/search?q=dr.+dre"},
+      {n:"Frank Ocean",u:"https://www.tiendaoutsider.com.ar/search?q=Frank+Ocean"},
+      {n:"The Fugees",u:"https://www.tiendaoutsider.com.ar/search?q=The+Fugees"},
+      {n:"Kendrick Lamar",u:"https://www.tiendaoutsider.com.ar/search?q=Kendrick+Lamar"},
+      {n:"Lauryn Hill",u:"https://www.tiendaoutsider.com.ar/search?q=lauryn+Hill"},
+      {n:"Mac Miller",u:"https://www.tiendaoutsider.com.ar/search?q=Mac+Miller"},
+      {n:"Massive Attack",u:"https://www.tiendaoutsider.com.ar/rap-hip-hop"},
+      {n:"N.W.A.",u:"https://www.tiendaoutsider.com.ar/search?q=N.W.A."},
+      {n:"Public Enemy",u:"https://www.tiendaoutsider.com.ar/search?q=public+enemy"},
+      {n:"Run DMC",u:"https://www.tiendaoutsider.com.ar/search?q=Run+DMC"},
+      {n:"Tyler The Creator",u:"https://www.tiendaoutsider.com.ar/search?q=Tyler+The+Creator"},
+      {n:"Wu-Tang Clan",u:"https://www.tiendaoutsider.com.ar/search?q=Wu-Tang+Clan"}
     ]
   }
 };
 
-const ORDEN = ['random','comics','manga'];
+const ORDEN = ['electronica','experimental','ambient','rap'];
 let modoEliminar = false;
 
-function sortKey(n){ return n.replace(/^(The |Los |Las |El |La )/i,'').toLowerCase(); }
+function sortKey(n){ return n.replace(/^(The |Los |Las )/i,'').toLowerCase(); }
 
 function renderSeccion(key){
-  const arr = [...SECCIONES[key].artistas].sort((a,b) => sortKey(a.n).localeCompare(sortKey(b.n),'es'));
+  const sec = SECCIONES[key];
+  const arr = [...sec.artistas].sort((a,b) => sortKey(a.n).localeCompare(sortKey(b.n),'es'));
   const grupos = {};
   arr.forEach(a => {
     const l = sortKey(a.n)[0].toUpperCase();
@@ -262,7 +271,7 @@ function descargarHTML(){
   const blob = new Blob([document.documentElement.outerHTML], {type:'text/html;charset=utf-8'});
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
-  a.download = 'random-comics-manga-anime.html';
+  a.download = 'electronica-rap.html';
   a.click();
 }
 
