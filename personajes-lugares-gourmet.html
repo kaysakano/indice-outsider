@@ -91,6 +91,7 @@ footer a:hover { color: #333; }
       </select>
     </div>
     <div class="field-group"><label>Nombre</label><input type="text" id="inp-nombre" placeholder="Ej: Muhammad Ali"></div>
+    <div class="field-group"><label>Ordenar como (opcional)</label><input type="text" id="inp-orden" placeholder="Ej: Scorsese Martin"><div class="panel-hint">Solo si querés que se ordene distinto a como se escribe</div></div>
     <div class="field-group"><label>URL</label><input type="text" id="inp-url" placeholder="Se genera automáticamente"><div class="panel-hint">Podés editarla si querés apuntar a una página específica</div></div>
     <div class="panel-btns"><button class="btn-add" onclick="agregarArtista()">Agregar</button><button class="btn-cancel" onclick="cerrarPanel()">Cancelar</button></div>
     <div class="msg-ok" id="msg-ok">✓ Agregado correctamente</div>
@@ -102,16 +103,17 @@ const SECCIONES = {
   personajes: {
     titulo: "Personajes",
     artistas: [
-      {n:"Muhammad Ali",u:"https://www.tiendaoutsider.com.ar/search?q=Muhammad+Ali"},
-      {n:"Oscar Ringo Bonavena",u:"https://www.tiendaoutsider.com.ar/search?q=Bonavena"},
-      {n:"Anthony Bourdain",u:"https://www.tiendaoutsider.com.ar/search?q=Anthony+Bourdain"},
-      {n:"Eric Cantona",u:"https://www.tiendaoutsider.com.ar/search?q=Eric+Cantona"},
-      {n:"Johann Cruyff",u:"https://www.tiendaoutsider.com.ar/search?q=Johann+Cruyff"},
-      {n:"Salvador Dalí",u:"https://www.tiendaoutsider.com.ar/search?q=Salvador+Dal%C3%AD"},
-      {n:"Joe Frazier",u:"https://www.tiendaoutsider.com.ar/search?q=frazier"},
-      {n:"Carl Sagan",u:"https://www.tiendaoutsider.com.ar/search?q=Carl+Sagan"},
+      {n:"Muhammad Ali",u:"https://www.tiendaoutsider.com.ar/search?q=Muhammad+Ali",o:"Ali Muhammad"},
+      {n:"Oscar Ringo Bonavena",u:"https://www.tiendaoutsider.com.ar/search?q=Bonavena",o:"Bonavena Oscar Ringo"},
+      {n:"Anthony Bourdain",u:"https://www.tiendaoutsider.com.ar/search?q=Anthony+Bourdain",o:"Bourdain Anthony"},
+      {n:"Eric Cantona",u:"https://www.tiendaoutsider.com.ar/search?q=Eric+Cantona",o:"Cantona Eric"},
+      {n:"Johann Cruyff",u:"https://www.tiendaoutsider.com.ar/search?q=Johann+Cruyff",o:"Cruyff Johann"},
+      {n:"Salvador Dalí",u:"https://www.tiendaoutsider.com.ar/search?q=Salvador+Dal%C3%AD",o:"Dalí Salvador"},
+      {n:"Joe Frazier",u:"https://www.tiendaoutsider.com.ar/search?q=frazier",o:"Frazier Joe"},
+      {n:"Carl Sagan",u:"https://www.tiendaoutsider.com.ar/search?q=Carl+Sagan",o:"Sagan Carl"},
       {n:"San Expedito",u:"https://www.tiendaoutsider.com.ar/search?q=San+Expedito"},
-      {n:"San Miguel Arcangel",u:"https://www.tiendaoutsider.com.ar/search?q=San+Miguel+Arcangel"}
+      {n:"San Miguel Arcangel",u:"https://www.tiendaoutsider.com.ar/search?q=San+Miguel+Arcangel"},
+      {n:"The Thrilla in Manila",u:"https://www.tiendaoutsider.com.ar/search?q=thrilla+in+manila"}
     ]
   },
   lugares: {
@@ -121,11 +123,14 @@ const SECCIONES = {
       {n:"Abbey Road",u:"https://www.tiendaoutsider.com.ar/search?q=Abbey+Road"},
       {n:"Blue Note Jazz Club",u:"https://www.tiendaoutsider.com.ar/search?q=blue+note"},
       {n:"Japón",u:"https://www.tiendaoutsider.com.ar/search?q=Jap%C3%B3n"},
-      {n:"Le Tour de France",u:"https://www.tiendaoutsider.com.ar/search?q=Le+Tour+de+France"},
       {n:"London Underground",u:"https://www.tiendaoutsider.com.ar/search?q=London+Underground"},
+      {n:"Madison Square Garden",u:"https://www.tiendaoutsider.com.ar/search?q=madison+square+garden"},
       {n:"Mercado de Tsukiji",u:"https://www.tiendaoutsider.com.ar/search?q=tsukiji"},
+      {n:"New York City",u:"https://www.tiendaoutsider.com.ar/search?q=new+york+city"},
       {n:"Ronnie Scott's Jazz Club",u:"https://www.tiendaoutsider.com.ar/search?q=ronnie+scott"},
       {n:"Shibuya Station Hachiko Memorial",u:"https://www.tiendaoutsider.com.ar/search?q=shibuya"},
+      {n:"Studio 54 Disco",u:"https://www.tiendaoutsider.com.ar/search?q=studio+54+disco"},
+      {n:"Le Tour de France",u:"https://www.tiendaoutsider.com.ar/search?q=Le+Tour+de+France"},
       {n:"Viet Nam",u:"https://www.tiendaoutsider.com.ar/search?q=viet+nam"}
     ]
   },
@@ -134,15 +139,21 @@ const SECCIONES = {
     artistas: [
       {n:"7 Eleven Convenience Stores",u:"https://www.tiendaoutsider.com.ar/search?q=7+Eleven"},
       {n:"Anthony Bourdain",u:"https://www.tiendaoutsider.com.ar/search?q=Anthony+Bourdain"},
+      {n:"Barilla",u:"https://www.tiendaoutsider.com.ar/search?q=barilla"},
+      {n:"Buitoni",u:"https://www.tiendaoutsider.com.ar/search?q=buitoni"},
       {n:"Cerveza Guinness",u:"https://www.tiendaoutsider.com.ar/search?q=Cerveza+Guinness"},
       {n:"Cognac Monnet",u:"https://www.tiendaoutsider.com.ar/search?q=cognac+monnet"},
       {n:"Compagnie Coloniale",u:"https://www.tiendaoutsider.com.ar/search?q=Compagnie+Coloniale"},
       {n:"Fugu",u:"https://www.tiendaoutsider.com.ar/search?q=fugu"},
+      {n:"Itadakimasu",u:"https://www.tiendaoutsider.com.ar/search?q=itadakimasu"},
+      {n:"Limoncello",u:"https://www.tiendaoutsider.com.ar/search?q=limoncello"},
       {n:"Ludwig Hohlwein (Marco Polo Tee)",u:"https://www.tiendaoutsider.com.ar/search?q=Ludwig+Hohlwein"},
+      {n:"Maruchan",u:"https://www.tiendaoutsider.com.ar/search?q=maruchan"},
       {n:"Mercado de Tsukiji",u:"https://www.tiendaoutsider.com.ar/search?q=tsukiji"},
       {n:"Mountain Dew",u:"https://www.tiendaoutsider.com.ar/search?q=Mountain+Dew"},
       {n:"Niguiris",u:"https://www.tiendaoutsider.com.ar/search?q=Niguiris"},
       {n:"Salsa de Soja Kikkoman",u:"https://www.tiendaoutsider.com.ar/search?q=kikkoman"},
+      {n:"Sashimi",u:"https://www.tiendaoutsider.com.ar/search?q=sashimi"},
       {n:"Sriracha Salsa",u:"https://www.tiendaoutsider.com.ar/search?q=sriracha"},
       {n:"Suntory Hibiki Whisky",u:"https://www.tiendaoutsider.com.ar/search?q=suntory"},
       {n:"Sushi",u:"https://www.tiendaoutsider.com.ar/search?q=Sushi"},
@@ -156,13 +167,13 @@ const SECCIONES = {
 const ORDEN = ['personajes','lugares','gourmet'];
 let modoEliminar = false;
 
-function sortKey(n){ return n.replace(/^(The |Los |Las |El |La )/i,'').toLowerCase(); }
+function sortKey(a){ const n=(typeof a==='string')?a:(a.o||a.n); return n.normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/^(The |Los |Las |El |La |Il |Le |Les |Un |Una |Lo |L')/i,'').toLowerCase(); }
 
 function renderSeccion(key){
-  const arr = [...SECCIONES[key].artistas].sort((a,b) => sortKey(a.n).localeCompare(sortKey(b.n),'es'));
+  const arr = [...SECCIONES[key].artistas].sort((a,b) => sortKey(a).localeCompare(sortKey(b),'es'));
   const grupos = {};
   arr.forEach(a => {
-    const l = sortKey(a.n)[0].toUpperCase();
+    const l = (sortKey(a)[0]||'#').toUpperCase();
     if(!grupos[l]) grupos[l] = [];
     grupos[l].push(a);
   });
@@ -184,25 +195,27 @@ function render(){
 }
 
 function abrirPanel(){ document.getElementById('panel').classList.add('open'); document.getElementById('inp-nombre').focus(); document.getElementById('msg-ok').style.display='none'; }
-function cerrarPanel(){ document.getElementById('panel').classList.remove('open'); document.getElementById('inp-nombre').value=''; document.getElementById('inp-url').value=''; }
+function cerrarPanel(){ document.getElementById('panel').classList.remove('open'); document.getElementById('inp-nombre').value=''; document.getElementById('inp-url').value=''; document.getElementById('inp-orden').value=''; }
 
 document.getElementById('inp-nombre').addEventListener('input', function(){
-  const q = this.value.trim().replace(/ /g,'+');
+  const q = this.value.trim().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/ /g,'+');
   document.getElementById('inp-url').value = q ? 'https://www.tiendaoutsider.com.ar/search?q='+q : '';
 });
 
 function agregarArtista(){
   const nombre = document.getElementById('inp-nombre').value.trim();
   const url = document.getElementById('inp-url').value.trim();
+  const orden = document.getElementById('inp-orden').value.trim();
   const key = document.getElementById('inp-seccion').value;
   if(!nombre){ alert('Ingresá el nombre'); return; }
   if(!url){ alert('Ingresá la URL'); return; }
   if(SECCIONES[key].artistas.find(a => a.n.toLowerCase() === nombre.toLowerCase())){ alert('Ya está en esa sección'); return; }
-  SECCIONES[key].artistas.push({n:nombre, u:url});
+  SECCIONES[key].artistas.push(orden?{n:nombre, u:url, o:orden}:{n:nombre, u:url});
   render();
   document.getElementById('msg-ok').style.display='block';
   document.getElementById('inp-nombre').value='';
   document.getElementById('inp-url').value='';
+  document.getElementById('inp-orden').value='';
   document.getElementById('inp-nombre').focus();
 }
 
@@ -222,7 +235,8 @@ function eliminar(key, nombre){
 }
 
 function descargarHTML(){
-  const blob = new Blob([document.documentElement.outerHTML], {type:'text/html;charset=utf-8'});
+  const out = '<!DOCTYPE html>\n'+document.documentElement.outerHTML;
+  const blob = new Blob([out.replace(/const SECCIONES = \{[\s\S]*?\n\};/, function(){ return 'const SECCIONES = '+JSON.stringify(SECCIONES,null,1)+';'; })], {type:'text/html;charset=utf-8'});
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
   a.download = 'personajes-lugares-gourmet.html';

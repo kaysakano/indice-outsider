@@ -15,6 +15,7 @@ header a.back:hover { color: #333; }
 .page-title h1 { font-size: 1.2rem; font-weight: 700; color: #333; margin-bottom: 4px; }
 .page-title p { font-size: 0.82rem; color: #999; }
 main { max-width: 980px; margin: 0 auto; padding: 16px 32px 80px; }
+.subseccion-titulo { font-size: 1.1rem; font-weight: 700; color: #555; margin: 24px 0 8px; padding-bottom: 4px; border-bottom: 1px solid #e0e0e0; }
 .seccion-titulo { font-size: 1.6rem; font-weight: 900; color: #333; margin: 36px 0 8px; padding-bottom: 8px; border-bottom: 2px solid #333; }
 h2 { font-size: 1.4rem; font-weight: 900; color: #333; margin: 24px 0 8px; padding-bottom: 5px; border-bottom: 1px solid #e0e0e0; }
 .artistas-line { color: #666; margin-bottom: 6px; line-height: 2.1; }
@@ -85,12 +86,14 @@ footer a:hover { color: #333; }
     <div class="field-group">
       <label>Sección</label>
       <select id="inp-seccion">
-        <option value="pintura">Pintura</option>
+        <option value="pintura">Pintura – Artistas</option>
+        <option value="pintura_obras">Pintura – Obras</option>
         <option value="arquitectura">Arquitectura y Diseño</option>
         <option value="fotografia">Fotografía</option>
       </select>
     </div>
     <div class="field-group"><label>Nombre</label><input type="text" id="inp-nombre" placeholder="Ej: Andy Warhol"></div>
+    <div class="field-group"><label>Ordenar como (opcional)</label><input type="text" id="inp-orden" placeholder="Ej: Scorsese Martin"><div class="panel-hint">Solo si querés que se ordene distinto a como se escribe</div></div>
     <div class="field-group"><label>URL</label><input type="text" id="inp-url" placeholder="Se genera automáticamente"><div class="panel-hint">Podés editarla si querés apuntar a una página específica</div></div>
     <div class="panel-btns"><button class="btn-add" onclick="agregarArtista()">Agregar</button><button class="btn-cancel" onclick="cerrarPanel()">Cancelar</button></div>
     <div class="msg-ok" id="msg-ok">✓ Agregado correctamente</div>
@@ -101,40 +104,129 @@ footer a:hover { color: #333; }
 const SECCIONES = {
   pintura: {
     titulo: "Pintura",
+    subtitulo: "Artistas",
     artistas: [
-      {n:"Alfons Mucha",u:"https://www.tiendaoutsider.com.ar/search?q=Alfons+Mucha"},
       {n:"Arte Japonés",u:"https://www.tiendaoutsider.com.ar/search?q=arte+japones"},
-      {n:"Jean Michel Basquiat",u:"https://www.tiendaoutsider.com.ar/search?q=Jean+Michel+Basquiat"},
-      {n:"William Blake",u:"https://www.tiendaoutsider.com.ar/search?q=William+Blake"},
+      {n:"Banksy",u:"https://www.tiendaoutsider.com.ar/search?q=banksy"},
+      {n:"Jean Michel Basquiat",u:"https://www.tiendaoutsider.com.ar/search?q=Jean+Michel+Basquiat",o:"Basquiat Jean Michel"},
+      {n:"William Blake",u:"https://www.tiendaoutsider.com.ar/search?q=William+Blake",o:"Blake William"},
       {n:"El Bosco / Hieronimus Bosch",u:"https://www.tiendaoutsider.com.ar/search?q=el+bosco"},
-      {n:"Leonetto Cappiello",u:"https://www.tiendaoutsider.com.ar/search?q=Leonetto+Cappiello"},
+      {n:"Leonetto Cappiello",u:"https://www.tiendaoutsider.com.ar/search?q=Leonetto+Cappiello",o:"Cappiello Leonetto"},
       {n:"Caravaggio",u:"https://www.tiendaoutsider.com.ar/search?q=caravaggio"},
-      {n:"Salvador Dalí",u:"https://www.tiendaoutsider.com.ar/search?q=Salvador+Dal%C3%AD"},
-      {n:"Gustave Doré",u:"https://www.tiendaoutsider.com.ar/search?q=Gustave+Dor%C3%A9"},
-      {n:"M.C. Escher",u:"https://www.tiendaoutsider.com.ar/search?q=Escher"},
-      {n:"H.R. Giger",u:"https://www.tiendaoutsider.com.ar/search?q=H.r.+Giger"},
-      {n:"René Gruau",u:"https://www.tiendaoutsider.com.ar/search?q=rene+gruau"},
-      {n:"Keith Haring",u:"https://www.tiendaoutsider.com.ar/search?q=keith+haring"},
-      {n:"Ludwig Hohlwein",u:"https://www.tiendaoutsider.com.ar/search?q=Ludwig+Hohlwein"},
-      {n:"Edward Hopper",u:"https://www.tiendaoutsider.com.ar/search?q=hopper"},
+      {n:"Salvador Dalí",u:"https://www.tiendaoutsider.com.ar/search?q=Salvador+Dal%C3%AD",o:"Dalí Salvador"},
+      {n:"Gustave Doré",u:"https://www.tiendaoutsider.com.ar/search?q=Gustave+Dor%C3%A9",o:"Doré Gustave"},
+      {n:"M.C. Escher",u:"https://www.tiendaoutsider.com.ar/search?q=Escher",o:"Escher M.C."},
+      {n:"H.R. Giger",u:"https://www.tiendaoutsider.com.ar/search?q=H.r.+Giger",o:"Giger H.R."},
+      {n:"René Gruau",u:"https://www.tiendaoutsider.com.ar/search?q=rene+gruau",o:"Gruau René"},
+      {n:"Keith Haring",u:"https://www.tiendaoutsider.com.ar/search?q=keith+haring",o:"Haring Keith"},
+      {n:"Suzuki Harunobu",u:"https://www.tiendaoutsider.com.ar/search?q=suzuki+harunobu",o:"Harunobu"},
+      {n:"Hashiguchi Goyo",u:"https://www.tiendaoutsider.com.ar/search?q=hashiguchi+goyo"},
+      {n:"Kawase Hasui",u:"https://www.tiendaoutsider.com.ar/search?q=kawase+hasui",o:"Hasui"},
+      {n:"Utagawa Hiroshige",u:"https://www.tiendaoutsider.com.ar/search?q=utagawa+hiroshige",o:"Hiroshige"},
+      {n:"Hishida Shunso",u:"https://www.tiendaoutsider.com.ar/search?q=hishida+shunso"},
+      {n:"Ludwig Hohlwein",u:"https://www.tiendaoutsider.com.ar/search?q=Ludwig+Hohlwein",o:"Hohlwein Ludwig"},
+      {n:"Katsushika Hokusai",u:"https://www.tiendaoutsider.com.ar/search?q=katsushika+hokusai",o:"Hokusai"},
+      {n:"Edward Hopper",u:"https://www.tiendaoutsider.com.ar/search?q=hopper",o:"Hopper Edward"},
+      {n:"Iijima Koga",u:"https://www.tiendaoutsider.com.ar/search?q=iijima+koga"},
+      {n:"Ito Jakuchu",u:"https://www.tiendaoutsider.com.ar/search?q=ito+jakuchu"},
+      {n:"Ito Shinsui",u:"https://www.tiendaoutsider.com.ar/search?q=ito+shinsui"},
+      {n:"Kasamatsu Shiro",u:"https://www.tiendaoutsider.com.ar/search?q=kasamatsu+shiro"},
+      {n:"Taniguchi Kokyo",u:"https://www.tiendaoutsider.com.ar/search?q=Taniguchi+Kokyo",o:"Kokyo"},
+      {n:"Ohara Koson",u:"https://www.tiendaoutsider.com.ar/search?q=ohara+koson",o:"Koson"},
+      {n:"Utagawa Kuniyoshi",u:"https://www.tiendaoutsider.com.ar/search?q=Utagawa+Kuniyoshi",o:"Kuniyoshi"},
+      {n:"Yayoi Kusama",u:"https://www.tiendaoutsider.com.ar/search?q=Yayoi+Kusama",o:"Kusama Yayoi"},
+      {n:"Kawanabe Kyosai",u:"https://www.tiendaoutsider.com.ar/search?q=kawanabe+kyosai",o:"Kyosai"},
+      {n:"John Martin",u:"https://www.tiendaoutsider.com.ar/search?q=John+Martin",o:"Martin John"},
+      {n:"Maruyama Okyo",u:"https://www.tiendaoutsider.com.ar/search?q=maruyama+okyo"},
+      {n:"Henry Matisse",u:"https://www.tiendaoutsider.com.ar/search?q=Henry+Matisse",o:"Matisse Henry"},
+      {n:"Matsumoto Hoji",u:"https://www.tiendaoutsider.com.ar/search?q=matsumoto+hoji"},
+      {n:"René Mederos",u:"https://www.tiendaoutsider.com.ar/search?q=Mederos",o:"Mederos René"},
+      {n:"Mori Ippo",u:"https://www.tiendaoutsider.com.ar/search?q=mori+ippo"},
+      {n:"Alfons Mucha",u:"https://www.tiendaoutsider.com.ar/search?q=Alfons+Mucha",o:"Mucha Alfons"},
+      {n:"Edvard Munch",u:"https://www.tiendaoutsider.com.ar/search?q=Edvard+Munch",o:"Munch Edvard"},
+      {n:"Hans and Botho von Romer",u:"https://www.tiendaoutsider.com.ar/search?q=Hans+and+Botho+von+Romer",o:"Romer Hans and Botho von"},
+      {n:"Rosetsu",u:"https://www.tiendaoutsider.com.ar/search?q=rosetsu"},
+      {n:"Egon Schiele",u:"https://www.tiendaoutsider.com.ar/search?q=Egon+Schiele",o:"Schiele Egon"},
+      {n:"Hiroaki Shotei Takahashi",u:"https://www.tiendaoutsider.com.ar/search?q=Hiroaki+Shotei+Takahashi",o:"Shotei Hiroaki Takahashi"},
+      {n:"Tsuchiya Koitsu",u:"https://www.tiendaoutsider.com.ar/search?q=tsuchiya+koitsu"},
+      {n:"Kitagawa Utamaro",u:"https://www.tiendaoutsider.com.ar/search?q=kitagawa+utamaro",o:"Utamaro"},
+      {n:"Andy Warhol",u:"https://www.tiendaoutsider.com.ar/search?q=Andy+Warhol",o:"Warhol Andy"},
+      {n:"Yamamoto Shunkyo",u:"https://www.tiendaoutsider.com.ar/search?q=yamamoto+shunkyo"},
+      {n:"Yoshitoshi",u:"https://www.tiendaoutsider.com.ar/search?q=yoshitoshi"}
+    ]
+  },
+  pintura_obras: {
+    titulo: null,
+    subtitulo: "Obras",
+    artistas: [
+      {n:"A.D.A.C. Winterfahrt (1925)",u:"https://www.tiendaoutsider.com.ar/search?q=a+d+a+c+winterfahrt"},
+      {n:"Abalone Divers",u:"https://www.tiendaoutsider.com.ar/search?q=abalone+divers"},
+      {n:"Bacco",u:"https://www.tiendaoutsider.com.ar/search?q=bacco"},
+      {n:"Bear Cub",u:"https://www.tiendaoutsider.com.ar/search?q=bear+cub"},
+      {n:"Brillo Box Pop Art",u:"https://www.tiendaoutsider.com.ar/search?q=brillo+box+pop+art"},
+      {n:"Cat and Plum Blossoms",u:"https://www.tiendaoutsider.com.ar/search?q=cat+and+plum+blossoms"},
+      {n:"Cats Enjoying the Evening Cool",u:"https://www.tiendaoutsider.com.ar/search?q=cats+enjoying+the+evening+cool"},
+      {n:"Cherry Blossoms and Full Moon",u:"https://www.tiendaoutsider.com.ar/search?q=cherry+blossoms+and+full+moon"},
+      {n:"Cycles Perfecta (1902)",u:"https://www.tiendaoutsider.com.ar/search?q=cycles+perfecta"},
+      {n:"Dancing Fox",u:"https://www.tiendaoutsider.com.ar/search?q=dancing+fox"},
+      {n:"Decollazione di San Giovanni Battista",u:"https://www.tiendaoutsider.com.ar/search?q=decollazione+di+san+giovanni+battista"},
+      {n:"Descending Geese",u:"https://www.tiendaoutsider.com.ar/search?q=descending+geese"},
+      {n:"Erotomechanics VII",u:"https://www.tiendaoutsider.com.ar/search?q=erotomechanics+vii"},
+      {n:"The Eve of the Deluge",u:"https://www.tiendaoutsider.com.ar/search?q=eve+of+the+deluge"},
+      {n:"Fine Wind, Clear Morning",u:"https://www.tiendaoutsider.com.ar/search?q=fine+wind+clear+morning"},
+      {n:"Frog, Meika Gafu",u:"https://www.tiendaoutsider.com.ar/search?q=frog+meika+gafu"},
+      {n:"Frogs, Bats and Insects",u:"https://www.tiendaoutsider.com.ar/search?q=frogs+bats+and+insects"},
+      {n:"Hand With Reflecting Sphere",u:"https://www.tiendaoutsider.com.ar/search?q=hand+with+reflecting+sphere"},
+      {n:"Hota Coast in Awa Province",u:"https://www.tiendaoutsider.com.ar/search?q=hota+coast+in+awa+province"},
+      {n:"Japanese Waxwing on Maple",u:"https://www.tiendaoutsider.com.ar/search?q=japanese+waxwing+on+maple"},
       {n:"El Jardín de las Delicias",u:"https://www.tiendaoutsider.com.ar/search?q=El+Jard%C3%ADn+de+las+Delicias"},
-      {n:"Taniguchi Kokyo",u:"https://www.tiendaoutsider.com.ar/search?q=Taniguchi+Kokyo"},
-      {n:"Utagawa Kuniyoshi",u:"https://www.tiendaoutsider.com.ar/search?q=Utagawa+Kuniyoshi"},
-      {n:"Yayoi Kusama",u:"https://www.tiendaoutsider.com.ar/search?q=Yayoi+Kusama"},
-      {n:"John Martin",u:"https://www.tiendaoutsider.com.ar/search?q=John+Martin"},
-      {n:"Henry Matisse",u:"https://www.tiendaoutsider.com.ar/search?q=Henry+Matisse"},
-      {n:"René Mederos",u:"https://www.tiendaoutsider.com.ar/search?q=Mederos"},
-      {n:"Edvard Munch",u:"https://www.tiendaoutsider.com.ar/search?q=Edvard+Munch"},
-      {n:"Hans and Botho von Romer",u:"https://www.tiendaoutsider.com.ar/search?q=Hans+and+Botho+von+Romer"},
-      {n:"Egon Schiele",u:"https://www.tiendaoutsider.com.ar/search?q=Egon+Schiele"},
-      {n:"Hiroaki Shotei Takahashi",u:"https://www.tiendaoutsider.com.ar/search?q=Hiroaki+Shotei+Takahashi"},
-      {n:"Andy Warhol",u:"https://www.tiendaoutsider.com.ar/search?q=Andy+Warhol"}
+      {n:"Kude Beach, Wakasa",u:"https://www.tiendaoutsider.com.ar/search?q=kude+beach+wakasa"},
+      {n:"Kyss IV (Edvard Munch)",u:"https://www.tiendaoutsider.com.ar/search?q=kyss+iv"},
+      {n:"Lake Chuzenji, Nikko",u:"https://www.tiendaoutsider.com.ar/search?q=lake+chuzenji+nikko"},
+      {n:"Leaping Carp, Cherry Tree",u:"https://www.tiendaoutsider.com.ar/search?q=leaping+carp+cherry+tree"},
+      {n:"Maple Tree and Small Birds",u:"https://www.tiendaoutsider.com.ar/search?q=maple+tree+and+small+birds"},
+      {n:"Maple Trees at Mama",u:"https://www.tiendaoutsider.com.ar/search?q=maple+trees+at+mama"},
+      {n:"Medusa (1597)",u:"https://www.tiendaoutsider.com.ar/search?q=medusa"},
+      {n:"Miyajima in Snow",u:"https://www.tiendaoutsider.com.ar/search?q=miyajima+in+snow"},
+      {n:"Montreux 1983",u:"https://www.tiendaoutsider.com.ar/search?q=montreux+1983"},
+      {n:"Moon Viewing at the Temple",u:"https://www.tiendaoutsider.com.ar/search?q=moon+viewing+at+the+temple"},
+      {n:"Morning at the Arayu Spa",u:"https://www.tiendaoutsider.com.ar/search?q=morning+at+the+arayu+spa"},
+      {n:"Nara Park",u:"https://www.tiendaoutsider.com.ar/search?q=nara+park"},
+      {n:"Naruto Whirlpools",u:"https://www.tiendaoutsider.com.ar/search?q=naruto+whirlpools"},
+      {n:"Nighthawks (Los Noctámbulos)",u:"https://www.tiendaoutsider.com.ar/search?q=nighthawks"},
+      {n:"Nu Bleu II",u:"https://www.tiendaoutsider.com.ar/search?q=nu+bleu+ii"},
+      {n:"Nude with Cat",u:"https://www.tiendaoutsider.com.ar/search?q=nude+with+cat"},
+      {n:"Pagoda in Evening Rain",u:"https://www.tiendaoutsider.com.ar/search?q=pagoda+in+evening+rain"},
+      {n:"Plum Park in Kameido",u:"https://www.tiendaoutsider.com.ar/search?q=plum+park+in+kameido"},
+      {n:"Puppies and Roses",u:"https://www.tiendaoutsider.com.ar/search?q=puppies+and+roses"},
+      {n:"Puppies in Mid-Spring",u:"https://www.tiendaoutsider.com.ar/search?q=puppies+in+mid+spring"},
+      {n:"Rabbits and Full Moon",u:"https://www.tiendaoutsider.com.ar/search?q=rabbits+and+full+moon"},
+      {n:"Rain at Shinagawa, Ryoshimachi",u:"https://www.tiendaoutsider.com.ar/search?q=rain+at+shinagawa+ryoshimachi"},
+      {n:"Ranas Samurais",u:"https://www.tiendaoutsider.com.ar/search?q=ranas+samurais"},
+      {n:"Le Rouge Baiser",u:"https://www.tiendaoutsider.com.ar/search?q=le+rouge+baiser"},
+      {n:"Sanmon Gate of Zojo-ji",u:"https://www.tiendaoutsider.com.ar/search?q=sanmon+gate+of+zojo+ji"},
+      {n:"Scene at Toeizan",u:"https://www.tiendaoutsider.com.ar/search?q=scene+at+toeizan"},
+      {n:"Seated Woman with Bent Knee",u:"https://www.tiendaoutsider.com.ar/search?q=seated+woman+with+bent+knee"},
+      {n:"Snow at Shinkyo Bridge, Nikko",u:"https://www.tiendaoutsider.com.ar/search?q=snow+at+shinkyo+bridge+nikko"},
+      {n:"Spirit of the Heron Maiden",u:"https://www.tiendaoutsider.com.ar/search?q=spirit+of+the+heron+maiden"},
+      {n:"Spring in the Mountains",u:"https://www.tiendaoutsider.com.ar/search?q=spring+in+the+mountains"},
+      {n:"Takiyasha The Witch and The Skeleton Spectre",u:"https://www.tiendaoutsider.com.ar/search?q=takiyasha+the+witch+and+the+skeleton+spectre"},
+      {n:"Thirty-Two Aspects",u:"https://www.tiendaoutsider.com.ar/search?q=thirty+two+aspects"},
+      {n:"Toad and Pufferfish Wrestling",u:"https://www.tiendaoutsider.com.ar/search?q=toad+and+pufferfish+wrestling"},
+      {n:"Torinomachi Festival",u:"https://www.tiendaoutsider.com.ar/search?q=torinomachi+festival"},
+      {n:"Trumpet 1984",u:"https://www.tiendaoutsider.com.ar/search?q=trumpet+1984"},
+      {n:"Tsurugaoka Hachiman Shrine",u:"https://www.tiendaoutsider.com.ar/search?q=tsurugaoka+hachiman+shrine"},
+      {n:"Untitled 1984",u:"https://www.tiendaoutsider.com.ar/search?q=untitled+1984"},
+      {n:"The Vision of Death",u:"https://www.tiendaoutsider.com.ar/search?q=vision+of+death"},
+      {n:"Washing the Hair",u:"https://www.tiendaoutsider.com.ar/search?q=washing+the+hair"},
+      {n:"Woman Combing Her Hair",u:"https://www.tiendaoutsider.com.ar/search?q=woman+combing+her+hair"}
     ]
   },
   arquitectura: {
     titulo: "Arquitectura y Diseño",
     artistas: [
       {n:"Bauhaus",u:"https://www.tiendaoutsider.com.ar/search?q=Bauhaus+Dise%C3%B1o+y+Arquitectura"},
+      {n:"Casa Batlló",u:"https://www.tiendaoutsider.com.ar/search?q=casa+batllo"},
       {n:"Comic Sans",u:"https://www.tiendaoutsider.com.ar/search?q=comic+sans"},
       {n:"Gaudi",u:"https://www.tiendaoutsider.com.ar/search?q=gaudi"},
       {n:"Helvetica Fuente",u:"https://www.tiendaoutsider.com.ar/search?q=Helvetica"},
@@ -145,26 +237,32 @@ const SECCIONES = {
     titulo: "Fotografía",
     artistas: [
       {n:"Adox",u:"https://www.tiendaoutsider.com.ar/search?q=adox"},
+      {n:"Dalí Atomicus",u:"https://www.tiendaoutsider.com.ar/search?q=dali+atomicus"},
+      {n:"Ernst Leitz",u:"https://www.tiendaoutsider.com.ar/search?q=ernst+leitz"},
       {n:"Foma",u:"https://www.tiendaoutsider.com.ar/search?q=foma"},
-      {n:"Philippe Halsman",u:"https://www.tiendaoutsider.com.ar/search?q=Halsman"},
+      {n:"Philippe Halsman",u:"https://www.tiendaoutsider.com.ar/search?q=Halsman",o:"Halsman Philippe"},
       {n:"Ilford",u:"https://www.tiendaoutsider.com.ar/search?q=ilford"},
+      {n:"Ilford Delta",u:"https://www.tiendaoutsider.com.ar/search?q=ilford+delta"},
+      {n:"Ilford HP5",u:"https://www.tiendaoutsider.com.ar/search?q=ilford+hp5"},
+      {n:"Kodachrome",u:"https://www.tiendaoutsider.com.ar/search?q=kodachrome"},
       {n:"Kodak",u:"https://www.tiendaoutsider.com.ar/search?q=Kodak"},
+      {n:"Kodak Ektachrome",u:"https://www.tiendaoutsider.com.ar/search?q=kodak+ektachrome"},
       {n:"Leica",u:"https://www.tiendaoutsider.com.ar/search?q=leica"},
       {n:"Rolleiflex",u:"https://www.tiendaoutsider.com.ar/search?q=Rolleiflex"}
     ]
   }
 };
 
-const ORDEN = ['pintura','arquitectura','fotografia'];
+const ORDEN = ['pintura','pintura_obras','arquitectura','fotografia'];
 let modoEliminar = false;
 
-function sortKey(n){ return n.replace(/^(The |Los |Las |El |La )/i,'').toLowerCase(); }
+function sortKey(a){ const n=(typeof a==='string')?a:(a.o||a.n); return n.normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/^(The |Los |Las |El |La |Il |Le |Les |Un |Una |Lo |L')/i,'').toLowerCase(); }
 
 function renderSeccion(key){
-  const arr = [...SECCIONES[key].artistas].sort((a,b) => sortKey(a.n).localeCompare(sortKey(b.n),'es'));
+  const arr = [...SECCIONES[key].artistas].sort((a,b) => sortKey(a).localeCompare(sortKey(b),'es'));
   const grupos = {};
   arr.forEach(a => {
-    const l = sortKey(a.n)[0].toUpperCase();
+    const l = (sortKey(a)[0]||'#').toUpperCase();
     if(!grupos[l]) grupos[l] = [];
     grupos[l].push(a);
   });
@@ -179,32 +277,37 @@ function renderSeccion(key){
 }
 
 function render(){
-  document.getElementById('indice').innerHTML = ORDEN.map((key, i) =>
-    `<div class="seccion-titulo"${i > 0 ? ' style="margin-top:52px"' : ''}>${SECCIONES[key].titulo}</div>` +
-    renderSeccion(key)
-  ).join('');
+  document.getElementById('indice').innerHTML = ORDEN.map((key, i) => {
+    const sec = SECCIONES[key];
+    let h = '';
+    if(sec.titulo) h += `<div class="seccion-titulo"${i > 0 ? ' style="margin-top:52px"' : ''}>${sec.titulo}</div>`;
+    if(sec.subtitulo) h += `<div class="subseccion-titulo"${!sec.titulo ? ' style="margin-top:48px"' : ''}>${sec.subtitulo}</div>`;
+    return h + renderSeccion(key);
+  }).join('');
 }
 
 function abrirPanel(){ document.getElementById('panel').classList.add('open'); document.getElementById('inp-nombre').focus(); document.getElementById('msg-ok').style.display='none'; }
-function cerrarPanel(){ document.getElementById('panel').classList.remove('open'); document.getElementById('inp-nombre').value=''; document.getElementById('inp-url').value=''; }
+function cerrarPanel(){ document.getElementById('panel').classList.remove('open'); document.getElementById('inp-nombre').value=''; document.getElementById('inp-url').value=''; document.getElementById('inp-orden').value=''; }
 
 document.getElementById('inp-nombre').addEventListener('input', function(){
-  const q = this.value.trim().replace(/ /g,'+');
+  const q = this.value.trim().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/ /g,'+');
   document.getElementById('inp-url').value = q ? 'https://www.tiendaoutsider.com.ar/search?q='+q : '';
 });
 
 function agregarArtista(){
   const nombre = document.getElementById('inp-nombre').value.trim();
   const url = document.getElementById('inp-url').value.trim();
+  const orden = document.getElementById('inp-orden').value.trim();
   const key = document.getElementById('inp-seccion').value;
   if(!nombre){ alert('Ingresá el nombre'); return; }
   if(!url){ alert('Ingresá la URL'); return; }
   if(SECCIONES[key].artistas.find(a => a.n.toLowerCase() === nombre.toLowerCase())){ alert('Ya está en esa sección'); return; }
-  SECCIONES[key].artistas.push({n:nombre, u:url});
+  SECCIONES[key].artistas.push(orden?{n:nombre, u:url, o:orden}:{n:nombre, u:url});
   render();
   document.getElementById('msg-ok').style.display='block';
   document.getElementById('inp-nombre').value='';
   document.getElementById('inp-url').value='';
+  document.getElementById('inp-orden').value='';
   document.getElementById('inp-nombre').focus();
 }
 
@@ -224,7 +327,8 @@ function eliminar(key, nombre){
 }
 
 function descargarHTML(){
-  const blob = new Blob([document.documentElement.outerHTML], {type:'text/html;charset=utf-8'});
+  const out = '<!DOCTYPE html>\n'+document.documentElement.outerHTML;
+  const blob = new Blob([out.replace(/const SECCIONES = \{[\s\S]*?\n\};/, function(){ return 'const SECCIONES = '+JSON.stringify(SECCIONES,null,1)+';'; })], {type:'text/html;charset=utf-8'});
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
   a.download = 'pintura-arquitectura-fotografia.html';

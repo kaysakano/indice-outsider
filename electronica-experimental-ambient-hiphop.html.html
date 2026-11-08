@@ -83,6 +83,7 @@ footer a:hover { color: #333; }
       </select>
     </div>
     <div class="field-group"><label>Nombre</label><input type="text" id="inp-nombre" placeholder="Ej: Daft Punk"></div>
+    <div class="field-group"><label>Ordenar como (opcional)</label><input type="text" id="inp-orden" placeholder="Ej: Scorsese Martin"><div class="panel-hint">Solo si querés que se ordene distinto a como se escribe</div></div>
     <div class="field-group"><label>URL</label><input type="text" id="inp-url" placeholder="Se genera automáticamente"><div class="panel-hint">Podés editarla si querés apuntar a una página específica</div></div>
     <div class="panel-btns"><button class="btn-add" onclick="agregarArtista()">Agregar</button><button class="btn-cancel" onclick="cerrarPanel()">Cancelar</button></div>
     <div class="msg-ok" id="msg-ok">✓ Agregado correctamente</div>
@@ -120,14 +121,15 @@ const SECCIONES = {
       {n:"Modeselektor",u:"https://www.tiendaoutsider.com.ar/search?q=modeselektor"},
       {n:"Moog",u:"https://www.tiendaoutsider.com.ar/search?q=Moog"},
       {n:"Morcheeba",u:"https://www.tiendaoutsider.com.ar/search?q=Morcheeba"},
+      {n:"Mort Garson",u:"https://www.tiendaoutsider.com.ar/search?q=mort+garson"},
       {n:"Nine Inch Nails",u:"https://www.tiendaoutsider.com.ar/search?q=nine+inch+nails"},
-      {n:"Pet Shop Boys",u:"https://www.tiendaoutsider.com.ar/search?q=pet+shop+boys"},
       {n:"Plantasia",u:"https://www.tiendaoutsider.com.ar/search?q=Plantasia"},
       {n:"The Prodigy",u:"https://www.tiendaoutsider.com.ar/search?q=the+prodigy"},
       {n:"Richie Hawtin (Plastikman)",u:"https://www.tiendaoutsider.com.ar/search?q=Richie+Hawtin"},
       {n:"Roland Equipos",u:"https://www.tiendaoutsider.com.ar/search?q=Roland"},
       {n:"Ryuichi Sakamoto",u:"https://www.tiendaoutsider.com.ar/search?q=Ryuichi+Sakamoto"},
       {n:"Stereolab",u:"https://www.tiendaoutsider.com.ar/search?q=Stereolab"},
+      {n:"Technotronic",u:"https://www.tiendaoutsider.com.ar/search?q=technotronic"},
       {n:"Thom Yorke",u:"https://www.tiendaoutsider.com.ar/search?q=Thom+Yorke"},
       {n:"Twenty One Pilots",u:"https://www.tiendaoutsider.com.ar/search?q=twenty+one+pilots"},
       {n:"Tycho",u:"https://www.tiendaoutsider.com.ar/search?q=Tycho"},
@@ -173,6 +175,7 @@ const SECCIONES = {
     titulo: "Rap / Hip Hop",
     artistas: [
       {n:"2Pac",u:"https://www.tiendaoutsider.com.ar/search?q=2pac"},
+      {n:"50 Cent",u:"https://www.tiendaoutsider.com.ar/search?q=50+cent"},
       {n:"A Tribe Called Quest",u:"https://www.tiendaoutsider.com.ar/search?q=A+Tribe+Called+Quest"},
       {n:"Beastie Boys",u:"https://www.tiendaoutsider.com.ar/search?q=Beastie+Boys"},
       {n:"Biggie (The Notorious B.I.G.)",u:"https://www.tiendaoutsider.com.ar/search?q=Biggie"},
@@ -181,10 +184,11 @@ const SECCIONES = {
       {n:"Cypress Hill",u:"https://www.tiendaoutsider.com.ar/search?q=Cypress+Hill"},
       {n:"Death Grips",u:"https://www.tiendaoutsider.com.ar/search?q=Death+Grips"},
       {n:"Def Jam Recordings",u:"https://www.tiendaoutsider.com.ar/search?q=def+jam"},
-      {n:"Drake",u:"https://www.tiendaoutsider.com.ar/search?q=drake"},
       {n:"Dr. Dre",u:"https://www.tiendaoutsider.com.ar/search?q=dr.+dre"},
+      {n:"Drake",u:"https://www.tiendaoutsider.com.ar/search?q=drake"},
       {n:"Frank Ocean",u:"https://www.tiendaoutsider.com.ar/search?q=Frank+Ocean"},
       {n:"The Fugees",u:"https://www.tiendaoutsider.com.ar/search?q=The+Fugees"},
+      {n:"Ice Cube",u:"https://www.tiendaoutsider.com.ar/search?q=ice+cube"},
       {n:"Kendrick Lamar",u:"https://www.tiendaoutsider.com.ar/search?q=Kendrick+Lamar"},
       {n:"Lauryn Hill",u:"https://www.tiendaoutsider.com.ar/search?q=lauryn+Hill"},
       {n:"Mac Miller",u:"https://www.tiendaoutsider.com.ar/search?q=Mac+Miller"},
@@ -201,14 +205,14 @@ const SECCIONES = {
 const ORDEN = ['electronica','experimental','ambient','rap'];
 let modoEliminar = false;
 
-function sortKey(n){ return n.replace(/^(The |Los |Las )/i,'').toLowerCase(); }
+function sortKey(a){ const n=(typeof a==='string')?a:(a.o||a.n); return n.normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/^(The |Los |Las |El |La |Il |Le |Les |Un |Una |Lo |L')/i,'').toLowerCase(); }
 
 function renderSeccion(key){
   const sec = SECCIONES[key];
-  const arr = [...sec.artistas].sort((a,b) => sortKey(a.n).localeCompare(sortKey(b.n),'es'));
+  const arr = [...sec.artistas].sort((a,b) => sortKey(a).localeCompare(sortKey(b),'es'));
   const grupos = {};
   arr.forEach(a => {
-    const l = sortKey(a.n)[0].toUpperCase();
+    const l = (sortKey(a)[0]||'#').toUpperCase();
     if(!grupos[l]) grupos[l] = [];
     grupos[l].push(a);
   });
@@ -230,25 +234,27 @@ function render(){
 }
 
 function abrirPanel(){ document.getElementById('panel').classList.add('open'); document.getElementById('inp-nombre').focus(); document.getElementById('msg-ok').style.display='none'; }
-function cerrarPanel(){ document.getElementById('panel').classList.remove('open'); document.getElementById('inp-nombre').value=''; document.getElementById('inp-url').value=''; }
+function cerrarPanel(){ document.getElementById('panel').classList.remove('open'); document.getElementById('inp-nombre').value=''; document.getElementById('inp-url').value=''; document.getElementById('inp-orden').value=''; }
 
 document.getElementById('inp-nombre').addEventListener('input', function(){
-  const q = this.value.trim().replace(/ /g,'+');
+  const q = this.value.trim().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/ /g,'+');
   document.getElementById('inp-url').value = q ? 'https://www.tiendaoutsider.com.ar/search?q='+q : '';
 });
 
 function agregarArtista(){
   const nombre = document.getElementById('inp-nombre').value.trim();
   const url = document.getElementById('inp-url').value.trim();
+  const orden = document.getElementById('inp-orden').value.trim();
   const key = document.getElementById('inp-seccion').value;
   if(!nombre){ alert('Ingresá el nombre'); return; }
   if(!url){ alert('Ingresá la URL'); return; }
   if(SECCIONES[key].artistas.find(a => a.n.toLowerCase() === nombre.toLowerCase())){ alert('Ya está en esa sección'); return; }
-  SECCIONES[key].artistas.push({n:nombre, u:url});
+  SECCIONES[key].artistas.push(orden?{n:nombre, u:url, o:orden}:{n:nombre, u:url});
   render();
   document.getElementById('msg-ok').style.display='block';
   document.getElementById('inp-nombre').value='';
   document.getElementById('inp-url').value='';
+  document.getElementById('inp-orden').value='';
   document.getElementById('inp-nombre').focus();
 }
 
@@ -268,7 +274,8 @@ function eliminar(key, nombre){
 }
 
 function descargarHTML(){
-  const blob = new Blob([document.documentElement.outerHTML], {type:'text/html;charset=utf-8'});
+  const out = '<!DOCTYPE html>\n'+document.documentElement.outerHTML;
+  const blob = new Blob([out.replace(/const SECCIONES = \{[\s\S]*?\n\};/, function(){ return 'const SECCIONES = '+JSON.stringify(SECCIONES,null,1)+';'; })], {type:'text/html;charset=utf-8'});
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
   a.download = 'electronica-rap.html';

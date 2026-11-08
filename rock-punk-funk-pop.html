@@ -74,6 +74,7 @@ footer a:hover { color: #333; }
   <div id="panel-inner">
     <h3>Agregar artista</h3>
     <div class="field-group"><label>Nombre del artista</label><input type="text" id="inp-nombre" placeholder="Ej: The Clash"></div>
+    <div class="field-group"><label>Ordenar como (opcional)</label><input type="text" id="inp-orden" placeholder="Ej: Scorsese Martin"><div class="panel-hint">Solo si querés que se ordene distinto a como se escribe</div></div>
     <div class="field-group"><label>URL de búsqueda en la tienda</label><input type="text" id="inp-url" placeholder="Se genera automáticamente"><div class="panel-hint">Podés editarla si querés apuntar a una página específica</div></div>
     <div class="panel-btns"><button class="btn-add" onclick="agregarArtista()">Agregar</button><button class="btn-cancel" onclick="cerrarPanel()">Cancelar</button></div>
     <div class="msg-ok" id="msg-ok">✓ Artista agregado correctamente</div>
@@ -81,20 +82,21 @@ footer a:hover { color: #333; }
 </div>
 <script>
 let ARTISTAS = [
+  {n:"A&M Records",u:"https://www.tiendaoutsider.com.ar/search?q=am+records"},
+  {n:"Abba",u:"https://www.tiendaoutsider.com.ar/search?q=abba+-"},
   {n:"Abbey Road",u:"https://www.tiendaoutsider.com.ar/search?q=abbey+road"},
-  {n:"AC/DC",u:"https://www.tiendaoutsider.com.ar/search?q=ac/dc"},
   {n:"Aerosmith",u:"https://www.tiendaoutsider.com.ar/search?q=Aerosmith"},
+  {n:"Air",u:"https://www.tiendaoutsider.com.ar/search?q=Air"},
   {n:"The Alan Parsons Project",u:"https://www.tiendaoutsider.com.ar/search?q=The+Alan+Parsons+Project"},
-  {n:"The Allman Brothers Band",u:"https://www.tiendaoutsider.com.ar/search?q=Allman+brothers"},
   {n:"All Them Witches",u:"https://www.tiendaoutsider.com.ar/search?q=All+Them+Witches"},
+  {n:"The Allman Brothers Band",u:"https://www.tiendaoutsider.com.ar/search?q=Allman+brothers"},
   {n:"alt-J",u:"https://www.tiendaoutsider.com.ar/search?q=alt-J"},
   {n:"The Arcs",u:"https://www.tiendaoutsider.com.ar/search?q=The+Arcs"},
   {n:"Arctic Monkeys",u:"https://www.tiendaoutsider.com.ar/search?q=Arctic+Monkeys"},
   {n:"Aretha Franklin",u:"https://www.tiendaoutsider.com.ar/search?q=Aretha+Franklin"},
   {n:"At The Drive In",u:"https://www.tiendaoutsider.com.ar/search?q=At+The+Drive+In"},
-  {n:"A&M Records",u:"https://www.tiendaoutsider.com.ar/search?q=am+records"},
   {n:"The B-52's",u:"https://www.tiendaoutsider.com.ar/search?q=b-52"},
-  {n:"The Black Keys",u:"https://www.tiendaoutsider.com.ar/search?q=The+Black+Keys"},
+  {n:"Backstreet Boys",u:"https://www.tiendaoutsider.com.ar/search?q=backstreet+boys"},
   {n:"Bad Brains",u:"https://www.tiendaoutsider.com.ar/search?q=Bad+Brains"},
   {n:"Bad Religion",u:"https://www.tiendaoutsider.com.ar/search?q=Bad+Religion"},
   {n:"Bauhaus",u:"https://www.tiendaoutsider.com.ar/search?q=Bauhaus"},
@@ -103,10 +105,14 @@ let ARTISTAS = [
   {n:"The Beatles",u:"https://www.tiendaoutsider.com.ar/search?q=beatles"},
   {n:"Beck",u:"https://www.tiendaoutsider.com.ar/search?q=Beck"},
   {n:"Beck Bogert Appice",u:"https://www.tiendaoutsider.com.ar/search?q=Beck+Bogert+Appice"},
+  {n:"Bee Gees",u:"https://www.tiendaoutsider.com.ar/search?q=bee+gees"},
   {n:"Big Muff Pedal",u:"https://www.tiendaoutsider.com.ar/search?q=Big+Muff"},
+  {n:"Billie Eilish",u:"https://www.tiendaoutsider.com.ar/search?q=Billie+Eilish"},
   {n:"Billy Idol",u:"https://www.tiendaoutsider.com.ar/search?q=Billy+Idol"},
+  {n:"Björk",u:"https://www.tiendaoutsider.com.ar/search?q=bjork"},
   {n:"The Black Crowes",u:"https://www.tiendaoutsider.com.ar/search?q=The+Black+Crowes"},
   {n:"Black Flag",u:"https://www.tiendaoutsider.com.ar/search?q=Black+Flag"},
+  {n:"The Black Keys",u:"https://www.tiendaoutsider.com.ar/search?q=The+Black+Keys"},
   {n:"Black Pumas",u:"https://www.tiendaoutsider.com.ar/search?q=black+pumas"},
   {n:"Black Rebel Motorcycle Club",u:"https://www.tiendaoutsider.com.ar/search?q=black+rebel+motorcycle"},
   {n:"Black Sabbath",u:"https://www.tiendaoutsider.com.ar/search?q=black+sabbath"},
@@ -119,6 +125,7 @@ let ARTISTAS = [
   {n:"Bob Dylan",u:"https://www.tiendaoutsider.com.ar/search?q=Bob+Dylan"},
   {n:"Bob Marley",u:"https://www.tiendaoutsider.com.ar/search?q=Bob+Marley"},
   {n:"Bob Seger",u:"https://www.tiendaoutsider.com.ar/search?q=Bob+Seger"},
+  {n:"Bon Jovi",u:"https://www.tiendaoutsider.com.ar/search?q=bon+jovi"},
   {n:"Bon Scott",u:"https://www.tiendaoutsider.com.ar/search?q=Bon+Scott"},
   {n:"Brian Eno",u:"https://www.tiendaoutsider.com.ar/search?q=brian+eno"},
   {n:"The Brian Jonestown Massacre",u:"https://www.tiendaoutsider.com.ar/search?q=The+Brian+Jonestown+Massacre"},
@@ -126,22 +133,27 @@ let ARTISTAS = [
   {n:"Bruno Mars",u:"https://www.tiendaoutsider.com.ar/search?q=Bruno+Mars"},
   {n:"Bryan Ferry",u:"https://www.tiendaoutsider.com.ar/search?q=Bryan+Ferry"},
   {n:"Buffalo Springfield",u:"https://www.tiendaoutsider.com.ar/search?q=buffalo+springfield"},
+  {n:"Bunbury",u:"https://www.tiendaoutsider.com.ar/search?q=bunbury"},
   {n:"Butthole Surfers",u:"https://www.tiendaoutsider.com.ar/search?q=Butthole+Surfers"},
   {n:"Buzzcocks",u:"https://www.tiendaoutsider.com.ar/search?q=buzzcocks"},
   {n:"The Byrds",u:"https://www.tiendaoutsider.com.ar/search?q=the+byrds"},
   {n:"Cabaret Voltaire",u:"https://www.tiendaoutsider.com.ar/search?q=Cabaret+Voltaire"},
-  {n:"CBGB Club",u:"https://www.tiendaoutsider.com.ar/search?q=cbgb"},
+  {n:"Cage The Elephant",u:"https://www.tiendaoutsider.com.ar/search?q=cage+the+elephant"},
+  {n:"Cake",u:"https://www.tiendaoutsider.com.ar/search?q=cake"},
   {n:"Camel",u:"https://www.tiendaoutsider.com.ar/search?q=Camel"},
   {n:"Captain Beyond",u:"https://www.tiendaoutsider.com.ar/search?q=captain+beyond"},
+  {n:"CBGB Club",u:"https://www.tiendaoutsider.com.ar/search?q=cbgb"},
   {n:"The Chemical Brothers",u:"https://www.tiendaoutsider.com.ar/search?q=The+Chemical+Brothers"},
-  {n:"Chuck Berry",u:"https://www.tiendaoutsider.com.ar/search?q=Chuck+Berry"},
   {n:"Chic (Nile Rodgers)",u:"https://www.tiendaoutsider.com.ar/search?q=chic+"},
+  {n:"Chico Buarque",u:"https://www.tiendaoutsider.com.ar/search?q=chico+buarque"},
+  {n:"Chris Cornell",u:"https://www.tiendaoutsider.com.ar/search?q=Chris+Cornell"},
+  {n:"Chuck Berry",u:"https://www.tiendaoutsider.com.ar/search?q=Chuck+Berry"},
   {n:"Cigarettes After Sex",u:"https://www.tiendaoutsider.com.ar/search?q=Cigarettes+After+Sex"},
   {n:"Circle Jerks",u:"https://www.tiendaoutsider.com.ar/search?q=Circle+Jerks"},
-  {n:"Chris Cornell",u:"https://www.tiendaoutsider.com.ar/search?q=Chris+Cornell"},
-  {n:"Cocteau Twins",u:"https://www.tiendaoutsider.com.ar/search?q=Cocteau+Twins"},
-  {n:"Counting Crows",u:"https://www.tiendaoutsider.com.ar/search?q=Counting+Crows"},
   {n:"The Clash",u:"https://www.tiendaoutsider.com.ar/search?q=the+clash"},
+  {n:"Cocteau Twins",u:"https://www.tiendaoutsider.com.ar/search?q=Cocteau+Twins"},
+  {n:"Coldplay",u:"https://www.tiendaoutsider.com.ar/search?q=coldplay"},
+  {n:"Counting Crows",u:"https://www.tiendaoutsider.com.ar/search?q=Counting+Crows"},
   {n:"The Cramps",u:"https://www.tiendaoutsider.com.ar/search?q=The+Cramps"},
   {n:"Creedence",u:"https://www.tiendaoutsider.com.ar/search?q=Creedence"},
   {n:"The Cure",u:"https://www.tiendaoutsider.com.ar/search?q=The+Cure"},
@@ -155,6 +167,7 @@ let ARTISTAS = [
   {n:"Deep Purple",u:"https://www.tiendaoutsider.com.ar/search?q=Deep+Purple"},
   {n:"Def Leppard",u:"https://www.tiendaoutsider.com.ar/search?q=Def+Leppard"},
   {n:"Depeche Mode",u:"https://www.tiendaoutsider.com.ar/search?q=depeche+mode"},
+  {n:"Derek and The Dominos",u:"https://www.tiendaoutsider.com.ar/search?q=derek+and+the+dominos"},
   {n:"Descendents",u:"https://www.tiendaoutsider.com.ar/search?q=descendents"},
   {n:"Dinosaur Jr.",u:"https://www.tiendaoutsider.com.ar/search?q=dinosaur+jr"},
   {n:"Dire Straits",u:"https://www.tiendaoutsider.com.ar/search?q=Dire+Straits"},
@@ -162,8 +175,10 @@ let ARTISTAS = [
   {n:"Djavan",u:"https://www.tiendaoutsider.com.ar/search?q=djavan"},
   {n:"Dolly Parton",u:"https://www.tiendaoutsider.com.ar/search?q=Dolly+Parton"},
   {n:"The Doors",u:"https://www.tiendaoutsider.com.ar/search?q=The+Doors"},
+  {n:"Duran Duran",u:"https://www.tiendaoutsider.com.ar/search?q=duran+duran"},
   {n:"Earth Wind and Fire",u:"https://www.tiendaoutsider.com.ar/musica-por-genero/rock-punk-funk/earth-wind-and-fire"},
   {n:"Echo and The Bunnymen",u:"https://www.tiendaoutsider.com.ar/search?q=Echo+and+The+Bunnymen"},
+  {n:"Elton John",u:"https://www.tiendaoutsider.com.ar/search?q=elton+john"},
   {n:"Elvis Presley",u:"https://www.tiendaoutsider.com.ar/search?q=Elvis+Presley"},
   {n:"Eric Clapton",u:"https://www.tiendaoutsider.com.ar/search?q=Eric+Clapton"},
   {n:"Europe",u:"https://www.tiendaoutsider.com.ar/search?q=europe"},
@@ -174,10 +189,11 @@ let ARTISTAS = [
   {n:"Fields of The Nephilim",u:"https://www.tiendaoutsider.com.ar/search?q=Fields+of+The+Nephilim"},
   {n:"The Flaming Lips",u:"https://www.tiendaoutsider.com.ar/search?q=The+Flaming+Lips"},
   {n:"Fleetwood Mac",u:"https://www.tiendaoutsider.com.ar/search?q=Fleetwood+Mac"},
+  {n:"Flipper",u:"https://www.tiendaoutsider.com.ar/search?q=flipper"},
   {n:"Foo Fighters",u:"https://www.tiendaoutsider.com.ar/search?q=Foo+Fighters"},
   {n:"Foreigner",u:"https://www.tiendaoutsider.com.ar/search?q=Foreigner"},
-  {n:"Frankie Goes to Hollywood",u:"https://www.tiendaoutsider.com.ar/search?q=Frankie+Goes+to+Hollywood"},
   {n:"Frank Zappa",u:"https://www.tiendaoutsider.com.ar/search?q=Frank+Zappa"},
+  {n:"Frankie Goes to Hollywood",u:"https://www.tiendaoutsider.com.ar/search?q=Frankie+Goes+to+Hollywood"},
   {n:"Franz Ferdinand",u:"https://www.tiendaoutsider.com.ar/search?q=Franz+Ferdinand"},
   {n:"Freddie Mercury",u:"https://www.tiendaoutsider.com.ar/search?q=Freddie+Mercury"},
   {n:"Fripp & Eno",u:"https://www.tiendaoutsider.com.ar/search?q=fripp+and+eno"},
@@ -194,12 +210,15 @@ let ARTISTAS = [
   {n:"Giorgio Moroder",u:"https://www.tiendaoutsider.com.ar/search?q=Giorgio+Moroder"},
   {n:"Goldfrapp",u:"https://www.tiendaoutsider.com.ar/search?q=Goldfrapp"},
   {n:"Gong",u:"https://www.tiendaoutsider.com.ar/search?q=gong"},
+  {n:"Goo Goo Dolls",u:"https://www.tiendaoutsider.com.ar/search?q=goo+goo+dolls"},
   {n:"Gorillaz",u:"https://www.tiendaoutsider.com.ar/search?q=gorillaz"},
+  {n:"Grace Jones",u:"https://www.tiendaoutsider.com.ar/search?q=grace+jones"},
   {n:"Grand Funk Railroad",u:"https://www.tiendaoutsider.com.ar/search?q=Grand+Funk+Railroad"},
   {n:"Grateful Dead",u:"https://www.tiendaoutsider.com.ar/search?q=Grateful+Dead"},
   {n:"Green Day",u:"https://www.tiendaoutsider.com.ar/search?q=Green+Day"},
   {n:"Greta Van Fleet",u:"https://www.tiendaoutsider.com.ar/search?q=Greta+Van+Fleet"},
   {n:"Hawkwind",u:"https://www.tiendaoutsider.com.ar/search?q=hawkwind"},
+  {n:"Hayley Williams",u:"https://www.tiendaoutsider.com.ar/search?q=hayley+williams"},
   {n:"Hiatus Kaiyote",u:"https://www.tiendaoutsider.com.ar/search?q=Hiatus+Kaiyote"},
   {n:"The Hives",u:"https://www.tiendaoutsider.com.ar/search?q=the+hives"},
   {n:"Hole",u:"https://www.tiendaoutsider.com.ar/search?q=Hole"},
@@ -217,51 +236,65 @@ let ARTISTAS = [
   {n:"Jeff Beck",u:"https://www.tiendaoutsider.com.ar/search?q=Jeff+Beck"},
   {n:"Jeff Buckley",u:"https://www.tiendaoutsider.com.ar/search?q=Jeff+Buckley"},
   {n:"Jefferson Airplane",u:"https://www.tiendaoutsider.com.ar/search?q=Jefferson+Airplane"},
-  {n:"Jethro Tull",u:"https://www.tiendaoutsider.com.ar/search?q=Jethro+Tull"},
   {n:"The Jesus and Mary Chain",u:"https://www.tiendaoutsider.com.ar/search?q=The+Jesus+and+Mary+Chain"},
+  {n:"Jethro Tull",u:"https://www.tiendaoutsider.com.ar/search?q=Jethro+Tull"},
+  {n:"Jimi Hendrix",u:"https://www.tiendaoutsider.com.ar/search?q=jimi+hendrix"},
+  {n:"JJ Cale",u:"https://www.tiendaoutsider.com.ar/search?q=jj+cale"},
   {n:"Joe Strummer",u:"https://www.tiendaoutsider.com.ar/search?q=Joe+Strummer"},
   {n:"John Cale",u:"https://www.tiendaoutsider.com.ar/search?q=John+Cale"},
+  {n:"John Fogerty",u:"https://www.tiendaoutsider.com.ar/search?q=john+fogerty"},
   {n:"John Lennon",u:"https://www.tiendaoutsider.com.ar/search?q=John+Lennon"},
   {n:"Johnny Cash",u:"https://www.tiendaoutsider.com.ar/search?q=Johnny+Cash"},
   {n:"Joni Mitchell",u:"https://www.tiendaoutsider.com.ar/search?q=Joni+Mitchell"},
   {n:"Journey",u:"https://www.tiendaoutsider.com.ar/search?q=Journey"},
   {n:"Joy Division",u:"https://www.tiendaoutsider.com.ar/search?q=Joy+Division"},
+  {n:"Kate Bush",u:"https://www.tiendaoutsider.com.ar/search?q=kate+bush"},
   {n:"Keith Richards",u:"https://www.tiendaoutsider.com.ar/search?q=Keith+Richards"},
+  {n:"Kevin Ayers",u:"https://www.tiendaoutsider.com.ar/search?q=kevin+ayers"},
   {n:"The Killers",u:"https://www.tiendaoutsider.com.ar/search?q=The+Killers"},
-  {n:"Killing Joke",u:"https://www.tiendaoutsider.com.ar/search?q=Killing+Joke"},
   {n:"King Crimson",u:"https://www.tiendaoutsider.com.ar/search?q=King+Crimson"},
   {n:"King Gizzard and The Lizard Wizard",u:"https://www.tiendaoutsider.com.ar/search?q=King+Gizzard"},
   {n:"Kiss",u:"https://www.tiendaoutsider.com.ar/search?q=Kiss"},
+  {n:"KMFDM",u:"https://www.tiendaoutsider.com.ar/search?q=kmfdm"},
   {n:"The Kooks",u:"https://www.tiendaoutsider.com.ar/search?q=The+Kooks"},
+  {n:"Kurt Cobain",u:"https://www.tiendaoutsider.com.ar/search?q=kurt+cobain"},
   {n:"Led Zeppelin",u:"https://www.tiendaoutsider.com.ar/search?q=Led+Zeppelin"},
+  {n:"Leon Russell",u:"https://www.tiendaoutsider.com.ar/search?q=leon+russell"},
   {n:"Leonard Cohen",u:"https://www.tiendaoutsider.com.ar/search?q=Leonard+Cohen"},
   {n:"Limp Bizkit",u:"https://www.tiendaoutsider.com.ar/search?q=Limp+Bizkit"},
   {n:"Linkin Park",u:"https://www.tiendaoutsider.com.ar/search?q=Linkin+Park"},
   {n:"Lionel Richie",u:"https://www.tiendaoutsider.com.ar/search?q=Lionel+Richie"},
   {n:"Living Colour",u:"https://www.tiendaoutsider.com.ar/search?q=living+colour"},
   {n:"Lou Reed",u:"https://www.tiendaoutsider.com.ar/search?q=Lou+Reed"},
+  {n:"Love and Rockets",u:"https://www.tiendaoutsider.com.ar/search?q=love+and+rockets"},
   {n:"Lynyrd Skynyrd",u:"https://www.tiendaoutsider.com.ar/search?q=Lynyrd+Skynyrd"},
   {n:"Mac DeMarco",u:"https://www.tiendaoutsider.com.ar/search?q=Mac+DeMarco"},
   {n:"Mad Season",u:"https://www.tiendaoutsider.com.ar/search?q=Mad+Season"},
   {n:"Madonna",u:"https://www.tiendaoutsider.com.ar/search?q=Madonna"},
   {n:"Magma",u:"https://www.tiendaoutsider.com.ar/search?q=Magma"},
+  {n:"The Magnetic Fields",u:"https://www.tiendaoutsider.com.ar/search?q=magnetic+fields"},
   {n:"Mahavishnu Orchestra",u:"https://www.tiendaoutsider.com.ar/search?q=Mahavishnu+orchestra"},
   {n:"Maneskin",u:"https://www.tiendaoutsider.com.ar/search?q=maneskin"},
   {n:"Marillion",u:"https://www.tiendaoutsider.com.ar/search?q=Marillion"},
   {n:"The Mars Volta",u:"https://www.tiendaoutsider.com.ar/search?q=The+Mars+Volta"},
   {n:"Marvin Gaye",u:"https://www.tiendaoutsider.com.ar/search?q=marvin+gaye"},
+  {n:"Mazzy Star",u:"https://www.tiendaoutsider.com.ar/search?q=mazzy+star"},
   {n:"MC5",u:"https://www.tiendaoutsider.com.ar/search?q=MC5"},
   {n:"Melvins",u:"https://www.tiendaoutsider.com.ar/search?q=Melvins"},
   {n:"Michael Jackson",u:"https://www.tiendaoutsider.com.ar/search?q=Michael+Jackson"},
   {n:"Mick Jagger",u:"https://www.tiendaoutsider.com.ar/search?q=Mick+Jagger"},
   {n:"Mike Patton",u:"https://www.tiendaoutsider.com.ar/search?q=Mike+Patton"},
   {n:"Milli Vanilli",u:"https://www.tiendaoutsider.com.ar/search?q=Milli+Vanilli"},
+  {n:"Milton Nascimento",u:"https://www.tiendaoutsider.com.ar/search?q=milton+nascimento"},
   {n:"Minor Threat",u:"https://www.tiendaoutsider.com.ar/search?q=Minor+Threat"},
   {n:"The Mission",u:"https://www.tiendaoutsider.com.ar/search?q=the+mission"},
+  {n:"Mogwai",u:"https://www.tiendaoutsider.com.ar/search?q=mogwai"},
   {n:"Molchat Doma",u:"https://www.tiendaoutsider.com.ar/search?q=Molchat+Doma"},
+  {n:"Molly Hatchet",u:"https://www.tiendaoutsider.com.ar/search?q=molly+hatchet"},
   {n:"Morphine",u:"https://www.tiendaoutsider.com.ar/search?q=morphine"},
   {n:"Morrissey",u:"https://www.tiendaoutsider.com.ar/search?q=Morrissey"},
   {n:"Motown Sello Discográfico",u:"https://www.tiendaoutsider.com.ar/search?q=motown"},
+  {n:"Muddy Waters",u:"https://www.tiendaoutsider.com.ar/search?q=muddy+waters"},
   {n:"Mudhoney",u:"https://www.tiendaoutsider.com.ar/search?q=Mudhoney"},
   {n:"Muse",u:"https://www.tiendaoutsider.com.ar/search?q=Muse"},
   {n:"My Bloody Valentine",u:"https://www.tiendaoutsider.com.ar/search?q=My+Bloody+Valentine"},
@@ -274,17 +307,18 @@ let ARTISTAS = [
   {n:"Nick Cave",u:"https://www.tiendaoutsider.com.ar/search?q=Nick+Cave"},
   {n:"Nick Drake",u:"https://www.tiendaoutsider.com.ar/search?q=nick+drake"},
   {n:"Nile Rodgers (Chic)",u:"https://www.tiendaoutsider.com.ar/search?q=Nile+Rodgers"},
+  {n:"Nina Simone",u:"https://www.tiendaoutsider.com.ar/search?q=nina+simone"},
   {n:"Nine Inch Nails",u:"https://www.tiendaoutsider.com.ar/search?q=nine+inch+nails"},
   {n:"Nirvana",u:"https://www.tiendaoutsider.com.ar/search?q=Nirvana"},
   {n:"No Doubt",u:"https://www.tiendaoutsider.com.ar/search?q=No+Doubt"},
   {n:"Nofx",u:"https://www.tiendaoutsider.com.ar/search?q=nofx"},
+  {n:"NoMeansNo",u:"https://www.tiendaoutsider.com.ar/search?q=nomeansno"},
   {n:"Oasis",u:"https://www.tiendaoutsider.com.ar/search?q=oasis"},
   {n:"Om",u:"https://www.tiendaoutsider.com.ar/musica-por-genero/rock-punk-funk/om-god-is-good"},
   {n:"Paramore",u:"https://www.tiendaoutsider.com.ar/search?q=Paramore"},
   {n:"Paul McCartney",u:"https://www.tiendaoutsider.com.ar/search?q=Paul+McCartney"},
   {n:"Pavement",u:"https://www.tiendaoutsider.com.ar/search?q=Pavement"},
   {n:"Pearl Jam",u:"https://www.tiendaoutsider.com.ar/search?q=pearl+jam"},
-  {n:"Pet Shop Boys",u:"https://www.tiendaoutsider.com.ar/search?q=pet+shop+boys"},
   {n:"Pink Floyd",u:"https://www.tiendaoutsider.com.ar/search?q=Pink+Floyd"},
   {n:"Pixies",u:"https://www.tiendaoutsider.com.ar/search?q=Pixies"},
   {n:"PJ Harvey",u:"https://www.tiendaoutsider.com.ar/search?q=PJ+Harvey"},
@@ -298,9 +332,11 @@ let ARTISTAS = [
   {n:"Procol Harum",u:"https://www.tiendaoutsider.com.ar/search?q=Procol+Harum"},
   {n:"The Prodigy",u:"https://www.tiendaoutsider.com.ar/search?q=the+prodigy"},
   {n:"Public Enemy",u:"https://www.tiendaoutsider.com.ar/search?q=public+enemy"},
+  {n:"Pulp",u:"https://www.tiendaoutsider.com.ar/search?q=pulp"},
   {n:"Queen",u:"https://www.tiendaoutsider.com.ar/search?q=Queen"},
   {n:"Queens of The Stone Age",u:"https://www.tiendaoutsider.com.ar/search?q=Queens+of+The+Stone+Age"},
   {n:"Quincy Jones",u:"https://www.tiendaoutsider.com.ar/search?q=Quincy+Jones"},
+  {n:"R.E.M.",u:"https://www.tiendaoutsider.com.ar/search?q=R.E.M."},
   {n:"Radio Moscow",u:"https://www.tiendaoutsider.com.ar/search?q=Radio+Moscow"},
   {n:"Radiohead",u:"https://www.tiendaoutsider.com.ar/search?q=Radiohead"},
   {n:"Rage Against The Machine",u:"https://www.tiendaoutsider.com.ar/search?q=Rage+Against+The+Machine"},
@@ -308,7 +344,6 @@ let ARTISTAS = [
   {n:"Rancid",u:"https://www.tiendaoutsider.com.ar/search?q=Rancid"},
   {n:"Ray Charles",u:"https://www.tiendaoutsider.com.ar/search?q=Ray+Charles"},
   {n:"Red Hot Chili Peppers",u:"https://www.tiendaoutsider.com.ar/search?q=Red+Hot+Chili+Peppers"},
-  {n:"R.E.M.",u:"https://www.tiendaoutsider.com.ar/search?q=R.E.M."},
   {n:"Regina Spektor",u:"https://www.tiendaoutsider.com.ar/search?q=regina+spektor"},
   {n:"Richard Hawley",u:"https://www.tiendaoutsider.com.ar/search?q=Richard+Hawley"},
   {n:"Rick Wakeman",u:"https://www.tiendaoutsider.com.ar/search?q=rick+wakeman"},
@@ -322,6 +357,7 @@ let ARTISTAS = [
   {n:"Rush",u:"https://www.tiendaoutsider.com.ar/search?q=Rush"},
   {n:"Ryuichi Sakamoto",u:"https://www.tiendaoutsider.com.ar/search?q=Ryuichi+Sakamoto"},
   {n:"Sade",u:"https://www.tiendaoutsider.com.ar/search?q=Sade"},
+  {n:"Samhain",u:"https://www.tiendaoutsider.com.ar/search?q=samhain"},
   {n:"Samsara Blues Experiment",u:"https://www.tiendaoutsider.com.ar/search?q=samsara"},
   {n:"Santana",u:"https://www.tiendaoutsider.com.ar/search?q=Santana"},
   {n:"Sex Pistols",u:"https://www.tiendaoutsider.com.ar/search?q=Sex+Pistols"},
@@ -350,6 +386,7 @@ let ARTISTAS = [
   {n:"Stray Cats",u:"https://www.tiendaoutsider.com.ar/search?q=Stray+Cats"},
   {n:"The Strokes",u:"https://www.tiendaoutsider.com.ar/search?q=The+Strokes"},
   {n:"Sublime",u:"https://www.tiendaoutsider.com.ar/search?q=Sublime"},
+  {n:"Sum 41",u:"https://www.tiendaoutsider.com.ar/search?q=sum+41"},
   {n:"Swans",u:"https://www.tiendaoutsider.com.ar/search?q=Swans"},
   {n:"Syd Barrett",u:"https://www.tiendaoutsider.com.ar/search?q=Syd+Barrett"},
   {n:"T. Rex",u:"https://www.tiendaoutsider.com.ar/search?q=t.+rex"},
@@ -377,35 +414,35 @@ let ARTISTAS = [
   {n:"Type O Negative",u:"https://www.tiendaoutsider.com.ar/search?q=Type+O+Negative"},
   {n:"U2",u:"https://www.tiendaoutsider.com.ar/search?q=U2"},
   {n:"Unknown Mortal Orchestra",u:"https://www.tiendaoutsider.com.ar/search?q=Unknown+Mortal+Orchestra"},
+  {n:"Uriah Heep",u:"https://www.tiendaoutsider.com.ar/search?q=uriah+heep"},
+  {n:"Van Der Graaf Generator",u:"https://www.tiendaoutsider.com.ar/search?q=van+der+graaf+generator"},
   {n:"The Velvet Underground",u:"https://www.tiendaoutsider.com.ar/search?q=The+Velvet+Underground"},
   {n:"Viagra Boys",u:"https://www.tiendaoutsider.com.ar/search?q=viagra+boys"},
   {n:"Violent Femmes",u:"https://www.tiendaoutsider.com.ar/search?q=Violent+Femmes"},
-  {n:"Virus",u:"https://www.tiendaoutsider.com.ar/search?q=virus"},
   {n:"Vulfpeck",u:"https://www.tiendaoutsider.com.ar/search?q=Vulfpeck"},
   {n:"Warpaint",u:"https://www.tiendaoutsider.com.ar/search?q=Warpaint"},
   {n:"The Weeknd",u:"https://www.tiendaoutsider.com.ar/search?q=the+weeknd"},
   {n:"Weezer",u:"https://www.tiendaoutsider.com.ar/search?q=Weezer"},
   {n:"Wham!",u:"https://www.tiendaoutsider.com.ar/search?q=Wham!"},
+  {n:"Whitney Houston",u:"https://www.tiendaoutsider.com.ar/search?q=whitney+houston"},
+  {n:"The Who",u:"https://www.tiendaoutsider.com.ar/search?q=who"},
   {n:"Wilco",u:"https://www.tiendaoutsider.com.ar/search?q=Wilco"},
   {n:"Willie Nelson",u:"https://www.tiendaoutsider.com.ar/search?q=Willie+Nelson"},
   {n:"The Winery Dogs",u:"https://www.tiendaoutsider.com.ar/search?q=The+Winery+Dogs"},
+  {n:"XTC",u:"https://www.tiendaoutsider.com.ar/search?q=xtc"},
   {n:"Yes",u:"https://www.tiendaoutsider.com.ar/search?q=Yes"},
-  {n:"ZZ Top",u:"https://www.tiendaoutsider.com.ar/search?q=ZZ+Top"},
-  {n:"Abba",u:"https://www.tiendaoutsider.com.ar/search?q=abba+-"},
-  {n:"Air",u:"https://www.tiendaoutsider.com.ar/search?q=Air"},
-  {n:"Billie Eilish",u:"https://www.tiendaoutsider.com.ar/search?q=Billie+Eilish"},
-  {n:"Björk",u:"https://www.tiendaoutsider.com.ar/search?q=bjork"}
+  {n:"ZZ Top",u:"https://www.tiendaoutsider.com.ar/search?q=ZZ+Top"}
 ];
 
 let modoEliminar = false;
 
-function sortKey(n){ return n.replace(/^(The |Los |Las |El |La )/i,'').toLowerCase(); }
+function sortKey(a){ const n=(typeof a==='string')?a:(a.o||a.n); return n.normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/^(The |Los |Las |El |La |Il |Le |Les |Un |Una |Lo |L')/i,'').toLowerCase(); }
 
 function render(){
-  ARTISTAS.sort((a,b) => sortKey(a.n).localeCompare(sortKey(b.n),'es'));
+  ARTISTAS.sort((a,b) => sortKey(a).localeCompare(sortKey(b),'es'));
   const grupos = {};
   ARTISTAS.forEach(a => {
-    const l = sortKey(a.n)[0].toUpperCase();
+    const l = (sortKey(a)[0]||'#').toUpperCase();
     if(!grupos[l]) grupos[l] = [];
     grupos[l].push(a);
   });
@@ -421,24 +458,26 @@ function render(){
 }
 
 function abrirPanel(){ document.getElementById('panel').classList.add('open'); document.getElementById('inp-nombre').focus(); document.getElementById('msg-ok').style.display='none'; }
-function cerrarPanel(){ document.getElementById('panel').classList.remove('open'); document.getElementById('inp-nombre').value=''; document.getElementById('inp-url').value=''; }
+function cerrarPanel(){ document.getElementById('panel').classList.remove('open'); document.getElementById('inp-nombre').value=''; document.getElementById('inp-url').value=''; document.getElementById('inp-orden').value=''; }
 
 document.getElementById('inp-nombre').addEventListener('input', function(){
-  const q = this.value.trim().replace(/ /g,'+');
+  const q = this.value.trim().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/ /g,'+');
   document.getElementById('inp-url').value = q ? 'https://www.tiendaoutsider.com.ar/search?q='+q : '';
 });
 
 function agregarArtista(){
   const nombre = document.getElementById('inp-nombre').value.trim();
   const url = document.getElementById('inp-url').value.trim();
+  const orden = document.getElementById('inp-orden').value.trim();
   if(!nombre){ alert('Ingresá el nombre del artista'); return; }
   if(!url){ alert('Ingresá la URL'); return; }
   if(ARTISTAS.find(a => a.n.toLowerCase() === nombre.toLowerCase())){ alert('Ese artista ya está en el índice'); return; }
-  ARTISTAS.push({n:nombre, u:url});
+  ARTISTAS.push(orden?{n:nombre, u:url, o:orden}:{n:nombre, u:url});
   render();
   document.getElementById('msg-ok').style.display='block';
   document.getElementById('inp-nombre').value='';
   document.getElementById('inp-url').value='';
+  document.getElementById('inp-orden').value='';
   document.getElementById('inp-nombre').focus();
 }
 
@@ -457,7 +496,8 @@ function eliminar(nombre){
 }
 
 function descargarHTML(){
-  const blob = new Blob([document.documentElement.outerHTML], {type:'text/html;charset=utf-8'});
+  const out = '<!DOCTYPE html>\n'+document.documentElement.outerHTML;
+  const blob = new Blob([out.replace(/let ARTISTAS = \[[\s\S]*?\n\];/, function(){ return 'let ARTISTAS = '+JSON.stringify(ARTISTAS,null,1)+';'; })], {type:'text/html;charset=utf-8'});
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
   a.download = 'rock-punk-funk-pop.html';

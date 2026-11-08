@@ -83,6 +83,7 @@ footer a:hover { color: #333; }
       </select>
     </div>
     <div class="field-group"><label>Nombre</label><input type="text" id="inp-nombre" placeholder="Ej: Miles Davis"></div>
+    <div class="field-group"><label>Ordenar como (opcional)</label><input type="text" id="inp-orden" placeholder="Ej: Scorsese Martin"><div class="panel-hint">Solo si querés que se ordene distinto a como se escribe</div></div>
     <div class="field-group"><label>URL</label><input type="text" id="inp-url" placeholder="Se genera automáticamente"><div class="panel-hint">Podés editarla si querés apuntar a una página específica</div></div>
     <div class="panel-btns"><button class="btn-add" onclick="agregarArtista()">Agregar</button><button class="btn-cancel" onclick="cerrarPanel()">Cancelar</button></div>
     <div class="msg-ok" id="msg-ok">✓ Agregado correctamente</div>
@@ -94,79 +95,84 @@ const SECCIONES = {
     titulo: "Jazz",
     artistas: [
       {n:"A&M Records",u:"https://www.tiendaoutsider.com.ar/search?q=am+records"},
-      {n:"Al Di Meola",u:"https://www.tiendaoutsider.com.ar/search?q=Al+Di+Meola"},
-      {n:"Al Di Meola, John Mc Laughlin, Paco de Lucía",u:"https://www.tiendaoutsider.com.ar/search?q=Al+Di+Meola+John+Mc+Laughlin+Paco+de+Luc%C3%ADa"},
-      {n:"Art Blakey",u:"https://www.tiendaoutsider.com.ar/search?q=Art+Blakey"},
-      {n:"Bill Evans",u:"https://www.tiendaoutsider.com.ar/search?q=Bill+Evans"},
-      {n:"Billy Cobham",u:"https://www.tiendaoutsider.com.ar/search?q=Billy+Cobham"},
+      {n:"Cannonball Adderley",u:"https://www.tiendaoutsider.com.ar/search?q=Cannonball+Adderley",o:"Adderley Cannonball"},
+      {n:"Chet Baker",u:"https://www.tiendaoutsider.com.ar/search?q=Chet+Baker",o:"Baker Chet"},
+      {n:"Art Blakey",u:"https://www.tiendaoutsider.com.ar/search?q=Art+Blakey",o:"Blakey Art"},
       {n:"Blue Note",u:"https://www.tiendaoutsider.com.ar/search?q=Blue+Note"},
       {n:"Blue Note Sello Discografico",u:"https://www.tiendaoutsider.com.ar/search?q=blue+note"},
-      {n:"Brad Mehldau",u:"https://www.tiendaoutsider.com.ar/search?q=Brad+Mehldau"},
-      {n:"Cannonball Adderley",u:"https://www.tiendaoutsider.com.ar/search?q=Cannonball+Adderley"},
-      {n:"Charles Mingus",u:"https://www.tiendaoutsider.com.ar/search?q=Charles+Mingus"},
-      {n:"Chet Baker",u:"https://www.tiendaoutsider.com.ar/search?q=Chet+Baker"},
-      {n:"Chick Corea",u:"https://www.tiendaoutsider.com.ar/search?q=Chick+Corea"},
+      {n:"The Dave Brubeck Quartet",u:"https://www.tiendaoutsider.com.ar/search?q=dave+brubeck+quartet",o:"Brubeck Dave Quartet"},
+      {n:"Kenny Burrell",u:"https://www.tiendaoutsider.com.ar/search?q=Kenny+Burrell",o:"Burrell Kenny"},
+      {n:"Ray Charles",u:"https://www.tiendaoutsider.com.ar/search?q=Ray+Charles",o:"Charles Ray"},
+      {n:"Stanley Clarke",u:"https://www.tiendaoutsider.com.ar/search?q=Stanley+Clarke",o:"Clarke Stanley"},
       {n:"Clube Da Esquina",u:"https://www.tiendaoutsider.com.ar/search?q=Clube+Da+Esquina"},
+      {n:"Billy Cobham",u:"https://www.tiendaoutsider.com.ar/search?q=Billy+Cobham",o:"Cobham Billy"},
+      {n:"John Coltrane",u:"https://www.tiendaoutsider.com.ar/search?q=John+Coltrane",o:"Coltrane John"},
+      {n:"Chick Corea",u:"https://www.tiendaoutsider.com.ar/search?q=Chick+Corea",o:"Corea Chick"},
+      {n:"Al Di Meola",u:"https://www.tiendaoutsider.com.ar/search?q=Al+Di+Meola",o:"Di Meola Al"},
+      {n:"Al Di Meola, John Mc Laughlin, Paco de Lucía",u:"https://www.tiendaoutsider.com.ar/search?q=Al+Di+Meola+John+Mc+Laughlin+Paco+de+Luc%C3%ADa",o:"Di Meola Al, John Mc Laughlin, Paco de Lucía"},
       {n:"Djavan",u:"https://www.tiendaoutsider.com.ar/search?q=djavan"},
       {n:"ECM Records",u:"https://www.tiendaoutsider.com.ar/search?q=ecm"},
-      {n:"Egberto Gismonti",u:"https://www.tiendaoutsider.com.ar/search?q=Egberto+Gismonti"},
+      {n:"Bill Evans",u:"https://www.tiendaoutsider.com.ar/search?q=Bill+Evans",o:"Evans Bill"},
       {n:"Festival de Jazz de Montreux",u:"https://www.tiendaoutsider.com.ar/search?q=montreux"},
-      {n:"Frank Zappa",u:"https://www.tiendaoutsider.com.ar/search?q=Frank+Zappa"},
+      {n:"Stan Getz",u:"https://www.tiendaoutsider.com.ar/search?q=Stan+Getz",o:"Getz Stan"},
       {n:"Gibson Guitars",u:"https://www.tiendaoutsider.com.ar/search?q=Gibson"},
-      {n:"Herbie Hancock",u:"https://www.tiendaoutsider.com.ar/search?q=Herbie+Hancock"},
-      {n:"Hermeto Pascoal",u:"https://www.tiendaoutsider.com.ar/search?q=Hermeto+Pascoal"},
+      {n:"Joao Gilberto",u:"https://www.tiendaoutsider.com.ar/search?q=Joao+Gilberto",o:"Gilberto Joao"},
+      {n:"Dizzy Gillespie",u:"https://www.tiendaoutsider.com.ar/search?q=dizzy+gillespie",o:"Gillespie Dizzy"},
+      {n:"Egberto Gismonti",u:"https://www.tiendaoutsider.com.ar/search?q=Egberto+Gismonti",o:"Gismonti Egberto"},
+      {n:"Jan Hammer",u:"https://www.tiendaoutsider.com.ar/search?q=Jan+Hammer",o:"Hammer Jan"},
+      {n:"Herbie Hancock",u:"https://www.tiendaoutsider.com.ar/search?q=Herbie+Hancock",o:"Hancock Herbie"},
       {n:"Hiatus Kaiyote",u:"https://www.tiendaoutsider.com.ar/search?q=Hiatus+Kaiyote"},
-      {n:"Hiroshi Suzuki",u:"https://www.tiendaoutsider.com.ar/search?q=Hiroshi+Suzuki"},
-      {n:"Jaco Pastorius",u:"https://www.tiendaoutsider.com.ar/search?q=Jaco+Pastorius"},
-      {n:"Jan Hammer",u:"https://www.tiendaoutsider.com.ar/search?q=Jan+Hammer"},
-      {n:"Jean-Luc Ponty",u:"https://www.tiendaoutsider.com.ar/search?q=jean-luc+ponty"},
-      {n:"Joao Gilberto",u:"https://www.tiendaoutsider.com.ar/search?q=Joao+Gilberto"},
-      {n:"John Coltrane",u:"https://www.tiendaoutsider.com.ar/search?q=John+Coltrane"},
-      {n:"Joni Mitchell",u:"https://www.tiendaoutsider.com.ar/search?q=Joni+Mitchell"},
-      {n:"Keith Jarrett",u:"https://www.tiendaoutsider.com.ar/search?q=Keith+Jarrett"},
-      {n:"Kenny Burrell",u:"https://www.tiendaoutsider.com.ar/search?q=Kenny+Burrell"},
-      {n:"Lee Morgan",u:"https://www.tiendaoutsider.com.ar/search?q=Lee+Morgan"},
+      {n:"Keith Jarrett",u:"https://www.tiendaoutsider.com.ar/search?q=Keith+Jarrett",o:"Jarrett Keith"},
+      {n:"Quincy Jones",u:"https://www.tiendaoutsider.com.ar/search?q=Quincy+Jones",o:"Jones Quincy"},
+      {n:"Rahsaan Roland Kirk",u:"https://www.tiendaoutsider.com.ar/search?q=rahsaan+roland+kirk",o:"Kirk Rahsaan Roland"},
       {n:"Mahavishnu Orchestra",u:"https://www.tiendaoutsider.com.ar/search?q=Mahavishnu+orchestra"},
+      {n:"Tim Maia",u:"https://www.tiendaoutsider.com.ar/search?q=Tim+Maia",o:"Maia Tim"},
       {n:"Medeski Martin and Wood",u:"https://www.tiendaoutsider.com.ar/search?q=Medeski+Martin+and+Wood"},
+      {n:"Brad Mehldau",u:"https://www.tiendaoutsider.com.ar/search?q=Brad+Mehldau",o:"Mehldau Brad"},
       {n:"Miles Davis",u:"https://www.tiendaoutsider.com.ar/search?q=Miles+Davis"},
-      {n:"Pharoah Sanders",u:"https://www.tiendaoutsider.com.ar/search?q=Pharoah+Sanders"},
-      {n:"Quincy Jones",u:"https://www.tiendaoutsider.com.ar/search?q=Quincy+Jones"},
-      {n:"Ray Charles",u:"https://www.tiendaoutsider.com.ar/search?q=Ray+Charles"},
+      {n:"Charles Mingus",u:"https://www.tiendaoutsider.com.ar/search?q=Charles+Mingus",o:"Mingus Charles"},
+      {n:"Joni Mitchell",u:"https://www.tiendaoutsider.com.ar/search?q=Joni+Mitchell",o:"Mitchell Joni"},
+      {n:"Thelonious Monk",u:"https://www.tiendaoutsider.com.ar/search?q=Thelonious+Monk",o:"Monk Thelonious"},
+      {n:"Vinicius De Moraes",u:"https://www.tiendaoutsider.com.ar/search?q=Vinicius+De+Moraes",o:"Moraes Vinicius"},
+      {n:"Lee Morgan",u:"https://www.tiendaoutsider.com.ar/search?q=Lee+Morgan",o:"Morgan Lee"},
+      {n:"Charlie Parker",u:"https://www.tiendaoutsider.com.ar/search?q=charlie+parker",o:"Parker Charlie"},
+      {n:"Hermeto Pascoal",u:"https://www.tiendaoutsider.com.ar/search?q=Hermeto+Pascoal",o:"Pascoal Hermeto"},
+      {n:"Jaco Pastorius",u:"https://www.tiendaoutsider.com.ar/search?q=Jaco+Pastorius",o:"Pastorius Jaco"},
+      {n:"Jean-Luc Ponty",u:"https://www.tiendaoutsider.com.ar/search?q=jean-luc+ponty",o:"Ponty Jean-Luc"},
+      {n:"Sonny Rollins",u:"https://www.tiendaoutsider.com.ar/search?q=Sonny+Rollins",o:"Rollins Sonny"},
       {n:"Ronnie Scott's Jazz Club",u:"https://www.tiendaoutsider.com.ar/search?q=Ronnie+Scott"},
       {n:"Sade",u:"https://www.tiendaoutsider.com.ar/search?q=Sade"},
+      {n:"Pharoah Sanders",u:"https://www.tiendaoutsider.com.ar/search?q=Pharoah+Sanders",o:"Sanders Pharoah"},
+      {n:"Wayne Shorter",u:"https://www.tiendaoutsider.com.ar/search?q=Wayne+Shorter",o:"Shorter Wayne"},
       {n:"Snarky Puppy",u:"https://www.tiendaoutsider.com.ar/search?q=Snarky+Puppy"},
-      {n:"Sonny Rollins",u:"https://www.tiendaoutsider.com.ar/search?q=Sonny+Rollins"},
-      {n:"Stan Getz",u:"https://www.tiendaoutsider.com.ar/search?q=Stan+Getz"},
-      {n:"Stanley Clarke",u:"https://www.tiendaoutsider.com.ar/search?q=Stanley+Clarke"},
       {n:"Sun Ra",u:"https://www.tiendaoutsider.com.ar/search?q=Sun+Ra"},
-      {n:"Thelonious Monk",u:"https://www.tiendaoutsider.com.ar/search?q=Thelonious+Monk"},
-      {n:"Tim Maia",u:"https://www.tiendaoutsider.com.ar/search?q=Tim+Maia"},
-      {n:"Tom Waits",u:"https://www.tiendaoutsider.com.ar/search?q=Tom+Waits"},
+      {n:"Hiromasa Suzuki",u:"https://www.tiendaoutsider.com.ar/search?q=hiromasa+suzuki",o:"Suzuki Hiromasa"},
+      {n:"Hiroshi Suzuki",u:"https://www.tiendaoutsider.com.ar/search?q=Hiroshi+Suzuki",o:"Suzuki Hiroshi"},
       {n:"Toquinho",u:"https://www.tiendaoutsider.com.ar/search?q=Toquinho"},
-      {n:"Vinicius De Moraes",u:"https://www.tiendaoutsider.com.ar/search?q=Vinicius+De+Moraes"},
-      {n:"Wayne Shorter",u:"https://www.tiendaoutsider.com.ar/search?q=Wayne+Shorter"},
+      {n:"Tom Waits",u:"https://www.tiendaoutsider.com.ar/search?q=Tom+Waits",o:"Waits Tom"},
       {n:"Weather Report",u:"https://www.tiendaoutsider.com.ar/search?q=Weather+Report"},
-      {n:"Yussef Kamaal",u:"https://www.tiendaoutsider.com.ar/search?q=Yussef+Kamaal"}
+      {n:"Yussef Kamaal",u:"https://www.tiendaoutsider.com.ar/search?q=Yussef+Kamaal"},
+      {n:"Frank Zappa",u:"https://www.tiendaoutsider.com.ar/search?q=Frank+Zappa",o:"Zappa Frank"}
     ]
   },
   clasico: {
     titulo: "Clásico / Ópera",
     artistas: [
-      {n:"Antonio Vivaldi",u:"https://www.tiendaoutsider.com.ar/search?q=Antonio+Vivaldi"},
-      {n:"Arvo Pärt",u:"https://www.tiendaoutsider.com.ar/search?q=arvo+part"},
+      {n:"Johann Sebastian Bach",u:"https://www.tiendaoutsider.com.ar/search?q=Johann+Sebastian+Bach",o:"Bach Johann Sebastian"},
+      {n:"Ludwig Van Beethoven",u:"https://www.tiendaoutsider.com.ar/search?q=beethoven",o:"Beethoven Ludwig Van"},
+      {n:"Frederic Chopin",u:"https://www.tiendaoutsider.com.ar/search?q=Frederic+Chopin",o:"Chopin Frederic"},
       {n:"ECM Records",u:"https://www.tiendaoutsider.com.ar/search?q=ecm"},
-      {n:"Ennio Morricone",u:"https://www.tiendaoutsider.com.ar/search?q=Ennio+Morricone"},
-      {n:"Frederic Chopin",u:"https://www.tiendaoutsider.com.ar/search?q=Frederic+Chopin"},
-      {n:"Giacomo Puccini",u:"https://www.tiendaoutsider.com.ar/search?q=Giacomo+Puccini"},
-      {n:"Johann Sebastian Bach",u:"https://www.tiendaoutsider.com.ar/search?q=Johann+Sebastian+Bach"},
-      {n:"Keith Jarrett",u:"https://www.tiendaoutsider.com.ar/search?q=Keith+Jarrett"},
-      {n:"Luciano Pavarotti",u:"https://www.tiendaoutsider.com.ar/search?q=Luciano+Pavarotti"},
-      {n:"Ludwig Van Beethoven",u:"https://www.tiendaoutsider.com.ar/search?q=beethoven"},
+      {n:"Keith Jarrett",u:"https://www.tiendaoutsider.com.ar/search?q=Keith+Jarrett",o:"Jarrett Keith"},
       {n:"Madama Butterfly",u:"https://www.tiendaoutsider.com.ar/search?q=Madama+Butterfly"},
-      {n:"Max Richter",u:"https://www.tiendaoutsider.com.ar/search?q=Max+Richter"},
-      {n:"Pyotr Ilyich Tchaikovsky",u:"https://www.tiendaoutsider.com.ar/search?q=Pyotr+Ilyich+Tchaikovsky"},
-      {n:"Ryuichi Sakamoto",u:"https://www.tiendaoutsider.com.ar/search?q=Ryuichi+Sakamoto"},
-      {n:"Turandot",u:"https://www.tiendaoutsider.com.ar/search?q=Turandot"}
+      {n:"Ennio Morricone",u:"https://www.tiendaoutsider.com.ar/search?q=Ennio+Morricone",o:"Morricone Ennio"},
+      {n:"Arvo Pärt",u:"https://www.tiendaoutsider.com.ar/search?q=arvo+part",o:"Pärt Arvo"},
+      {n:"Luciano Pavarotti",u:"https://www.tiendaoutsider.com.ar/search?q=Luciano+Pavarotti",o:"Pavarotti Luciano"},
+      {n:"Giacomo Puccini",u:"https://www.tiendaoutsider.com.ar/search?q=Giacomo+Puccini",o:"Puccini Giacomo"},
+      {n:"Max Richter",u:"https://www.tiendaoutsider.com.ar/search?q=Max+Richter",o:"Richter Max"},
+      {n:"Ryuichi Sakamoto",u:"https://www.tiendaoutsider.com.ar/search?q=Ryuichi+Sakamoto",o:"Sakamoto Ryuichi"},
+      {n:"Pyotr Ilyich Tchaikovsky",u:"https://www.tiendaoutsider.com.ar/search?q=Pyotr+Ilyich+Tchaikovsky",o:"Tchaikovsky Pyotr Ilyich"},
+      {n:"Turandot",u:"https://www.tiendaoutsider.com.ar/search?q=Turandot"},
+      {n:"Antonio Vivaldi",u:"https://www.tiendaoutsider.com.ar/search?q=Antonio+Vivaldi",o:"Vivaldi Antonio"}
     ]
   }
 };
@@ -174,13 +180,13 @@ const SECCIONES = {
 const ORDEN = ['jazz','clasico'];
 let modoEliminar = false;
 
-function sortKey(n){ return n.replace(/^(The |Los |Las )/i,'').toLowerCase(); }
+function sortKey(a){ const n=(typeof a==='string')?a:(a.o||a.n); return n.normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/^(The |Los |Las |El |La |Il |Le |Les |Un |Una |Lo |L')/i,'').toLowerCase(); }
 
 function renderSeccion(key){
-  const arr = [...SECCIONES[key].artistas].sort((a,b) => sortKey(a.n).localeCompare(sortKey(b.n),'es'));
+  const arr = [...SECCIONES[key].artistas].sort((a,b) => sortKey(a).localeCompare(sortKey(b),'es'));
   const grupos = {};
   arr.forEach(a => {
-    const l = sortKey(a.n)[0].toUpperCase();
+    const l = (sortKey(a)[0]||'#').toUpperCase();
     if(!grupos[l]) grupos[l] = [];
     grupos[l].push(a);
   });
@@ -202,25 +208,27 @@ function render(){
 }
 
 function abrirPanel(){ document.getElementById('panel').classList.add('open'); document.getElementById('inp-nombre').focus(); document.getElementById('msg-ok').style.display='none'; }
-function cerrarPanel(){ document.getElementById('panel').classList.remove('open'); document.getElementById('inp-nombre').value=''; document.getElementById('inp-url').value=''; }
+function cerrarPanel(){ document.getElementById('panel').classList.remove('open'); document.getElementById('inp-nombre').value=''; document.getElementById('inp-url').value=''; document.getElementById('inp-orden').value=''; }
 
 document.getElementById('inp-nombre').addEventListener('input', function(){
-  const q = this.value.trim().replace(/ /g,'+');
+  const q = this.value.trim().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/ /g,'+');
   document.getElementById('inp-url').value = q ? 'https://www.tiendaoutsider.com.ar/search?q='+q : '';
 });
 
 function agregarArtista(){
   const nombre = document.getElementById('inp-nombre').value.trim();
   const url = document.getElementById('inp-url').value.trim();
+  const orden = document.getElementById('inp-orden').value.trim();
   const key = document.getElementById('inp-seccion').value;
   if(!nombre){ alert('Ingresá el nombre'); return; }
   if(!url){ alert('Ingresá la URL'); return; }
   if(SECCIONES[key].artistas.find(a => a.n.toLowerCase() === nombre.toLowerCase())){ alert('Ya está en esa sección'); return; }
-  SECCIONES[key].artistas.push({n:nombre, u:url});
+  SECCIONES[key].artistas.push(orden?{n:nombre, u:url, o:orden}:{n:nombre, u:url});
   render();
   document.getElementById('msg-ok').style.display='block';
   document.getElementById('inp-nombre').value='';
   document.getElementById('inp-url').value='';
+  document.getElementById('inp-orden').value='';
   document.getElementById('inp-nombre').focus();
 }
 
@@ -240,7 +248,8 @@ function eliminar(key, nombre){
 }
 
 function descargarHTML(){
-  const blob = new Blob([document.documentElement.outerHTML], {type:'text/html;charset=utf-8'});
+  const out = '<!DOCTYPE html>\n'+document.documentElement.outerHTML;
+  const blob = new Blob([out.replace(/const SECCIONES = \{[\s\S]*?\n\};/, function(){ return 'const SECCIONES = '+JSON.stringify(SECCIONES,null,1)+';'; })], {type:'text/html;charset=utf-8'});
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
   a.download = 'jazz-clasico.html';
